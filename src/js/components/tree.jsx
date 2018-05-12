@@ -60,8 +60,8 @@ class Tree extends React.Component {
 				<button onClick={ this.onClose } className='close_button'>✖</button>
 				{ root.list.map(node => (
 					<span key={ node.nodeLabel }>
-            <Branch { ...node } visibleElement={ visibleElement }/>
-          </span>
+						<Branch { ...node } visibleElement={ visibleElement }/>
+                    </span>
 				)) }
 			</div>
 		);
