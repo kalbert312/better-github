@@ -4,115 +4,115 @@
 /* Extension specific */
 
 .__better_github_pr {
-    display: none;
+	display: none;
 }
 
 .enable_better_github_pr .__better_github_pr {
-    display: block;
-    position: relative;
-    margin-top: 20px;
-    padding: 10px;
-    width: 240px;
-    overflow: auto;
-    height: calc(100vh - 61px);
-    background-color: #fafbfc;
-    border: 1px solid #e1e4e8;
-    box-sizing: border-box;
-    border-radius: 3px;
+	display: block;
+	position: relative;
+	margin-top: 20px;
+	padding: 10px;
+	width: 240px;
+	overflow: auto;
+	height: calc(100vh - 61px);
+	background-color: #FAFBFC;
+	border: 1px solid #E1E4E8;
+	box-sizing: border-box;
+	border-radius: 3px;
 }
 
 .__better_github_pr > div {
-    display: inline-block;
+	display: inline-block;
 }
 
 .__better_github_pr .close_button {
-    background: none;
-    border: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 5px 2px;
+	background: none;
+	border: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 5px 2px;
 }
 
 /* GitHub page changes */
 
 .enable_better_github_pr .diff-view,
 .enable_better_github_pr .commit.full-commit.prh-commit {
-    margin-left: 250px;
+	margin-left: 250px;
 }
 
 .enable_better_github_pr .diff-view .file-header {
-    position: sticky;
-    top: 60px;
-    z-index: 1;
+	position: sticky;
+	top: 60px;
+	z-index: 1;
 }
 
 .enable_better_github_pr .comment-holder {
-    max-width: 708px;
+	max-width: 708px;
 }
 
 /* react-treeview */
 
 .tree-view_item {
-    position: relative;
-    padding-left: 37px;
-    transition: background-color .1s;
+	position: relative;
+	padding-left: 37px;
+	transition: background-color .1s;
 }
 
 .tree-view_item:hover {
-    background-color: #efefef;
+	background-color: #EFEFEF;
 }
 
 .tree-view_arrow {
-    transform: translateY(-1px);
-    position: absolute;
-    left: 0;
-    right: 0;
+	transform: translateY(-1px);
+	position: absolute;
+	left: 0;
+	right: 0;
 }
 
 .tree-view_arrow:before {
-    content: url("data:image/svg+xml;uff8,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' viewBox='0 0 100 125' enable-background='new 0 0 100 100' xml:space='preserve'><polygon stroke='%23adadad' fill='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10' points='  82.626,50 17.374,87.674 17.374,12.326 82.626,50 17.374,87.674 17.374,12.326 '/></svg>");
-    display: inline-block;
-    height: 13px;
-    width: 13px;
-    vertical-align: middle;
-    margin-right: 4px;
-    transition: transform .2s;
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    transform: rotate(90deg);
+	content: url("data:image/svg+xml;uff8,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' viewBox='0 0 100 125' enable-background='new 0 0 100 100' xml:space='preserve'><polygon stroke='%23adadad' fill='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round' stroke-miterlimit='10' points='  82.626,50 17.374,87.674 17.374,12.326 82.626,50 17.374,87.674 17.374,12.326 '/></svg>");
+	display: inline-block;
+	height: 13px;
+	width: 13px;
+	vertical-align: middle;
+	margin-right: 4px;
+	transition: transform .2s;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	transform: rotate(90deg);
 }
 
 .tree-view_arrow:after {
-    content: url('data:image/svg+xml;uff8,<svg xmlns="http://www.w3.org/2000/svg" class="octicon octicon-file-directory" height="16" version="1.1" viewBox="0 0 14 16" width="14"><path fill="%238197B0" fill-rule="evenodd" d="M13 4H7V3c0-.66-.31-1-1-1H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1zM6 4H1V3h5v1z"></path></svg>');
-    height: 17px;
-    width: 17px;
-    display: inline-block;
-    vertical-align: middle;
+	content: url('data:image/svg+xml;uff8,<svg xmlns="http://www.w3.org/2000/svg" class="octicon octicon-file-directory" height="16" version="1.1" viewBox="0 0 14 16" width="14"><path fill="%238197B0" fill-rule="evenodd" d="M13 4H7V3c0-.66-.31-1-1-1H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1zM6 4H1V3h5v1z"></path></svg>');
+	height: 17px;
+	width: 17px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .tree-view_arrow-collapsed {
-    -webkit-transform: none;
-    -moz-transform: none;
-    -ms-transform: none;
-    transform: none;
+	-webkit-transform: none;
+	-moz-transform: none;
+	-ms-transform: none;
+	transform: none;
 }
 
 .tree-view_arrow-collapsed:before {
-    -webkit-transform: none;
-    -moz-transform: none;
-    -ms-transform: none;
-    transform: none;
+	-webkit-transform: none;
+	-moz-transform: none;
+	-ms-transform: none;
+	transform: none;
 }
 
 .github-pr-file {
-    white-space: nowrap;
-    padding-left: 18px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+	white-space: nowrap;
+	padding-left: 18px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
 
 .github-pr-file > span {
-    margin-right: 4px;
+	margin-right: 4px;
 }

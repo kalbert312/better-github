@@ -1,12 +1,21 @@
 {
-  "presets": [
-    ["es2015", { "module": "false" }],
-    "react"
-  ],
-  "plugins": ["transform-object-rest-spread"],
-  "env": {
-    "test": {
-      "presets": ["es2017"]
-    }
-  }
+	"presets": [
+		[
+			"es2015",
+			{
+				"module": "false"
+			}
+		],
+		"react"
+	],
+	"plugins": [
+		"transform-object-rest-spread"
+	],
+	"env": {
+		"test": {
+			"presets": [
+				"es2017"
+			]
+		}
+	}
 }
