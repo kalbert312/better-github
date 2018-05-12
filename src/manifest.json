@@ -2,16 +2,17 @@
 	"name": "GitHub Pull Request Tree",
 	"short_name": "GitHub PRs",
 	"permissions": [
-		"*://*.github.com/*"
+		"*://*.github.com/*",
+		"storage"
 	],
 	"content_scripts": [
 		{
 			"matches": [
 				"*://*.github.com/*"
 			],
-			"run_at": "document_idle",
+			"run_at": "document_start",
 			"js": [
-				"better_github_prs.js"
+				"main.js"
 			]
 		}
 	],
@@ -21,5 +22,9 @@
 		"128": "128x128.png"
 	},
 	"manifest_version": 2,
-	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": false
+	}
 }

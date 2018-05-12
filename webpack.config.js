@@ -4,14 +4,18 @@ const WriteFilePlugin = require("write-file-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const copyWebpackPlugins = [
-	{ from: "./src/icons" }
+	{ from: "./src/icons" },
+	{ from: "./src/options" },
 ];
 
 module.exports = {
-	entry: path.join(__dirname, "src", "js", "index.jsx"),
+	entry: {
+		main: path.join(__dirname, "src", "js", "index.jsx"),
+		options: path.join(__dirname, "src", "options", "options.js"),
+	},
 	output: {
 		path: path.join(__dirname, "build"),
-		filename: "better_github_prs.js"
+		filename: "[name].js"
 	},
 	module: {
 		rules: [

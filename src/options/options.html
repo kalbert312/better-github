@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Better GitHub PR UI</title>
+	<style>
+		.form-row {
+			margin: 6px;
+		}
+	</style>
+</head>
+<body>
+	<div class="form-row">
+		<label>
+			Page width:
+			<input type="text" id="common-page-width"> (any valid CSS width value)
+		</label>
+	</div>
+	<div class="form-row">
+		<label>
+			PR File Tree Width:
+			<input type="text" id="pr-files-tree-width"> (any valid CSS width value)
+		</label>
+	</div>
+	<div class="form-row">
+		<label>
+			<input type="checkbox" id="pr-files-single-diff">
+			Single file diff only (experimental)
+		</label>
+	</div>
+	<div class="form-row">
+		<label>
+			<input type="checkbox" id="pr-files-auto-load-large-diff">
+			Auto-load large diffs
+		</label>
+	</div>
+	<div id="status"></div>
+	<button id="save">Save</button>
+	<script src="options.js"></script>
+</body>
+</html>
