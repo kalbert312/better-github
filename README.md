@@ -1,11 +1,19 @@
-# GitHub Pull Request Tree
-Add a file tree to GitHub's Pull Request page
+# Better Github
 
+Fork of Tal Bereznitskey's [Github PR Tree](https://github.com/berzniz/github_pr_tree)
+
+Adds a file tree to GitHub's Pull Request page
 ![GitHub Pull Request](assets/screenshot.png "GitHub Pull Request")
 
-## Install
+Allows for single file diffing (experimental)
+Allows for autoloading of large diffs
+Adds a link to the PR header to jump to the bottom of the page where the merge button and PR status is.
 
-Install from the Chrome web store: [GitHub Pull Request Tree](https://chrome.google.com/webstore/detail/nfhdjopbhlggibjlimhdbogflgmbiahc)
+Extension options that allow customizing:
+- Mostly global page width
+- PR Tree width
+- Single file diff on/off
+- Autoload large diffs on/off
 
 ## Development
 

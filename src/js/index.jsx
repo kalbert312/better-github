@@ -1,3 +1,5 @@
+__webpack_public_path__ = window.chrome.extension.getURL('');
+
 import React from 'react';
 import { render } from 'react-dom';
 import Tree from './components/tree';
@@ -99,6 +101,7 @@ const renderToBottomLink = (extSettings: ExtSettings) => {
 const start = (settings: ExtSettings) => {
 	observe();
 	renderTree(settings);
+	renderToBottomLink(settings);
 };
 
 let settings;
@@ -120,8 +123,6 @@ window.addEventListener('DOMContentLoaded', (e) => {
 	if (contentBody) {
 		contentBody.style.visibility = '';
 	}
-
-	renderToBottomLink(settings);
 
 	if (settings[OptionKeys.pr.filesChanged.singleFileDiffing]) {
 		window.addEventListener('popstate', (e) => {

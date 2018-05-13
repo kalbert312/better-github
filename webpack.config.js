@@ -27,7 +27,19 @@ module.exports = {
 			{
 				test: /\.css$/,
 				loader: "style-loader!css-loader"
-			}
+			},
+			{
+				test: /\.(eot|png|svg|[ot]tf|woff2?)(\?v=\d+\.\d+\.\d+)?$/,
+				use: [
+					{
+						loader: "file-loader",
+						options: {
+							name: "[name].[ext]",
+							outputPath: "fonts/",
+						},
+					},
+				],
+			},
 		]
 	},
 	resolve: {

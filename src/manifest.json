@@ -26,5 +26,13 @@
 	"options_ui": {
 		"page": "options.html",
 		"open_in_tab": false
-	}
+	},
+	"web_accessible_resources": [
+		"*.png",
+		"*.eot",
+		"*.woff",
+		"*.woff2",
+		"*.ttf",
+		"*.svg"
+	]
 }
