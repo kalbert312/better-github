@@ -47,8 +47,12 @@
 	z-index: 1;
 }
 
-.enable_better_github_pr .comment-holder {
-	max-width: 708px;
+.enable_better_github_pr .inline-comments .inline-comment-form, .enable_better_github_pr .inline-comments .inline-comment-form-container, .comment-holder {
+	max-width: 1000px;
+}
+
+.better-diff-hidden {
+	display: none;
 }
 
 /* react-treeview */

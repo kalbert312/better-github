@@ -1,8 +1,17 @@
-import React from "react";
-import Branch from "./branch.jsx";
-import { isElementVisible } from "../lib";
+// @flow
+import React from 'react';
+import Branch from './branch.jsx';
+import type { FileNode } from '../lib';
+import { isElementVisible, loadLargeDiffForDiffPanel } from '../lib';
+import type { ExtSettings } from '../../common/options';
+import { OptionKeys } from '../../common/options';
 
-class Tree extends React.Component {
+type Props = {
+	root: FileNode,
+	extSettings: ExtSettings
+};
+
+class Tree extends React.Component<Props> {
 	constructor(props) {
 		super(props);
 
@@ -20,6 +29,7 @@ class Tree extends React.Component {
 		window.addEventListener("load", this.onScroll, false);
 		window.addEventListener("scroll", this.onScroll, false);
 		window.addEventListener("resize", this.onScroll, false);
+		window.addEventListener("popstate", this.onScroll, false);
 	}
 
 	componentWillUnmount() {
@@ -27,14 +37,22 @@ class Tree extends React.Component {
 		window.removeEventListener("load", this.onScroll, false);
 		window.removeEventListener("scroll", this.onScroll, false);
 		window.removeEventListener("resize", this.onScroll, false);
+		window.removeEventListener("popstate", this.onScroll, false);
 	}
 
 	onScroll() {
 		const { visibleElement } = this.state;
-		const { root } = this.props;
+		const { root, extSettings } = this.props;
 		const { diffElements = [] } = root;
-		const nextVisibleElement = diffElements.find(isElementVisible);
+		const visibleDiffElements = diffElements.filter(isElementVisible);
+		if (!extSettings[OptionKeys.pr.filesChanged.singleFileDiffing] && extSettings[OptionKeys.pr.filesChanged.autoLoadLargeDiffs]) {
+			visibleDiffElements.forEach((el) => {
+				loadLargeDiffForDiffPanel(el);
+			});
+		}
+		const nextVisibleElement = visibleDiffElements.length ? visibleDiffElements[0] : null;
 		if (nextVisibleElement !== visibleElement) {
+			console.log(`visible: ${visibleElement ? visibleElement.id : null}`);
 			this.setState({
 				visibleElement: nextVisibleElement
 			});
@@ -48,7 +66,7 @@ class Tree extends React.Component {
 	}
 
 	render() {
-		const { root } = this.props;
+		const { root, extSettings } = this.props;
 		const { show, visibleElement } = this.state;
 
 		if (!show) {
@@ -57,7 +75,7 @@ class Tree extends React.Component {
 
 		return (
 			<div>
-				<button onClick={ this.onClose } className='close_button'>✖</button>
+				{ !extSettings[OptionKeys.pr.filesChanged.singleFileDiffing] ? <button onClick={ this.onClose } className='close_button'>✖</button> : null }
 				{ root.list.map(node => (
 					<span key={ node.nodeLabel }>
 						<Branch { ...node } visibleElement={ visibleElement }/>

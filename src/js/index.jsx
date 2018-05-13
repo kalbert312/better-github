@@ -1,7 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Tree from './components/tree';
-import { createFileTree, createRootElement } from './lib';
+import { createFileTree, createRootElement, switchDiffPanelToHash } from './lib';
+import type { ExtSettings } from '../common/options';
 import { defaultExtensionOptions, OptionKeys } from '../common/options';
 
 const { document, MutationObserver, parseInt } = window;
@@ -14,7 +15,7 @@ const observe = () => {
 	observer.observe(pjaxContainer, { childList: true });
 };
 
-const injectStyles = (settings) => {
+const injectStyles = (settings: ExtSettings) => {
 	let cssToInject = {};
 
 	if (settings[OptionKeys.common.pageWidth]) {
@@ -53,25 +54,30 @@ const injectStyles = (settings) => {
 	document.head.appendChild(styleEl);
 };
 
-const renderTree = (settings) => {
-	const fileCount = parseInt((document.getElementById("files_tab_counter") || { innerText: 0 }).innerText, 10);
+const renderTree = (extSettings: ExtSettings) => {
 	const rootElement = createRootElement();
-	const enabled = Boolean(rootElement && fileCount > 0);
+	const enabled = Boolean(rootElement);
 	document.body.classList.toggle("enable_better_github_pr", enabled);
 	if (!enabled) {
 		return;
 	}
 
-	const { tree, count } = createFileTree();
-	render(<Tree root={ tree }/>, rootElement);
-	if (fileCount !== count) {
-		setTimeout(renderTree.bind(this, rootElement), 100);
+	const { tree, count } = createFileTree(settings);
+	render(<Tree root={ tree } extSettings={ settings }/>, rootElement);
+
+	const singleFileDiffing = extSettings[OptionKeys.pr.filesChanged.singleFileDiffing];
+	if (singleFileDiffing) {
+		switchDiffPanelToHash(extSettings);
+	}
+
+	if (document.querySelector('.diff-progressive-loader')) {
+		setTimeout(renderTree.bind(this, settings), 100);
 	}
 };
 
-const start = () => {
+const start = (settings: ExtSettings) => {
 	observe();
-	renderTree();
+	renderTree(settings);
 };
 
 let settings;
@@ -90,7 +96,13 @@ window.addEventListener('DOMContentLoaded', (e) => {
 	injectStyles(settings);
 	contentBody.style.visibility = '';
 
+	if (settings[OptionKeys.pr.filesChanged.singleFileDiffing]) {
+		window.addEventListener('popstate', (e) => {
+			switchDiffPanelToHash(settings);
+		});
+	}
+
 	observe();
-	start();
+	start(settings);
 });
 

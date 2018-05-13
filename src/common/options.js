@@ -1,3 +1,9 @@
+// @flow
+
+export type ExtSettings = {
+	[key: string]: mixed,
+};
+
 export const OptionKeys = {
 	common: {
 		pageWidth: 'common_pageWidth',
@@ -11,7 +17,7 @@ export const OptionKeys = {
 	},
 };
 
-export const defaultExtensionOptions = Object.freeze({
+export const defaultExtensionOptions: ExtSettings = Object.freeze({
 	[OptionKeys.common.pageWidth]: null,
 	[OptionKeys.pr.filesChanged.fileTreeWidth]: '240px',
 	[OptionKeys.pr.filesChanged.singleFileDiffing]: false,
