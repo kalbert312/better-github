@@ -3,7 +3,7 @@
 import type { ExtSettings } from '../common/options';
 import { OptionKeys } from '../common/options';
 
-export const createRootElement = () => {
+export const createOrGetPRFilesChangedTreeContainerEl = () => {
 	const injectionElement = document.querySelector(".pr-toolbar");
 	if (!injectionElement) {
 		return;
@@ -47,6 +47,10 @@ export const loadLargeDiffForDiffPanel = (buttonContainerEl) => {
 };
 
 export const switchDiffPanelToHash = (extSettings: ExtSettings) => {
+	if (!document.querySelector("#better-github-pr-tree")) {
+		return; // not relevant
+	}
+
 	let excludedDiffPanelEl;
 
 	let hash = document.location.hash;

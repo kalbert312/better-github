@@ -73,7 +73,7 @@ class Tree extends React.Component<Props> {
 		}
 
 		return (
-			<div>
+			<div id="better-github-pr-tree">
 				{ !extSettings[OptionKeys.pr.filesChanged.singleFileDiffing] ? <button onClick={ this.onClose } className='close_button'>✖</button> : null }
 				{ root.list.map(node => (
 					<span key={ node.nodeLabel }>

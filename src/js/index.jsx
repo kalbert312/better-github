@@ -1,16 +1,19 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Tree from './components/tree';
-import { createFileTree, createRootElement, switchDiffPanelToHash } from './lib';
+import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, switchDiffPanelToHash } from './lib';
 import type { ExtSettings } from '../common/options';
 import { defaultExtensionOptions, OptionKeys } from '../common/options';
 
-const { document, MutationObserver, parseInt } = window;
+const { document, MutationObserver } = window;
 
 let observer;
 const observe = () => {
 	observer && observer.disconnect();
 	const pjaxContainer = document.querySelector("[data-pjax-container]");
+	if (!pjaxContainer) {
+		return;
+	}
 	observer = new MutationObserver(start);
 	observer.observe(pjaxContainer, { childList: true });
 };
@@ -55,14 +58,14 @@ const injectStyles = (settings: ExtSettings) => {
 };
 
 const renderTree = (extSettings: ExtSettings) => {
-	const rootElement = createRootElement();
+	const rootElement = createOrGetPRFilesChangedTreeContainerEl();
 	const enabled = Boolean(rootElement);
 	document.body.classList.toggle("enable_better_github_pr", enabled);
 	if (!enabled) {
 		return;
 	}
 
-	const { tree, count } = createFileTree(settings);
+	const { tree } = createFileTree(settings);
 	render(<Tree root={ tree } extSettings={ settings }/>, rootElement);
 
 	const singleFileDiffing = extSettings[OptionKeys.pr.filesChanged.singleFileDiffing];
@@ -87,14 +90,18 @@ chrome.storage.sync.get(defaultExtensionOptions, (extSettings) => {
 
 window.addEventListener('DOMContentLoaded', (e) => {
 	let contentBody = document.body.querySelector('.application-main');
-	contentBody.style.visibility = 'hidden';
+	if (contentBody) {
+		contentBody.style.visibility = 'hidden';
+	}
 
 	require('./style.css');
 
 	while (!settings) { }
 
 	injectStyles(settings);
-	contentBody.style.visibility = '';
+	if (contentBody) {
+		contentBody.style.visibility = '';
+	}
 
 	if (settings[OptionKeys.pr.filesChanged.singleFileDiffing]) {
 		window.addEventListener('popstate', (e) => {

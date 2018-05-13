@@ -51,6 +51,11 @@
 	max-width: 1000px;
 }
 
+.discussion-timeline {
+	width: 50%;
+	min-width: 760px;
+}
+
 .better-diff-hidden {
 	display: none;
 }
