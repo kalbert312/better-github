@@ -52,7 +52,6 @@ class Tree extends React.Component<Props> {
 		}
 		const nextVisibleElement = visibleDiffElements.length ? visibleDiffElements[0] : null;
 		if (nextVisibleElement !== visibleElement) {
-			console.log(`visible: ${visibleElement ? visibleElement.id : null}`);
 			this.setState({
 				visibleElement: nextVisibleElement
 			});
