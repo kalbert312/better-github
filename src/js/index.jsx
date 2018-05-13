@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Tree from './components/tree';
-import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, switchDiffPanelToHash } from './lib';
+import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from './lib';
 import type { ExtSettings } from '../common/options';
 import { defaultExtensionOptions, OptionKeys } from '../common/options';
 
@@ -78,6 +78,24 @@ const renderTree = (extSettings: ExtSettings) => {
 	}
 };
 
+const renderToBottomLink = (extSettings: ExtSettings) => {
+	const containerEl = getPartialDiscussionHeaderEl();
+	if (!containerEl || containerEl.querySelector("#better-github-to-bottom")) {
+		return;
+	}
+
+	const onClick = () => {
+		const footer = document.querySelector('.footer');
+		if (footer) {
+			footer.scrollIntoView();
+		}
+	};
+
+	const targetEl = document.createElement("div");
+	containerEl.appendChild(targetEl);
+	render(<span id="better-github-to-bottom" className="btn-link" onClick={ onClick }>Jump to Bottom</span>, targetEl);
+};
+
 const start = (settings: ExtSettings) => {
 	observe();
 	renderTree(settings);
@@ -102,6 +120,8 @@ window.addEventListener('DOMContentLoaded', (e) => {
 	if (contentBody) {
 		contentBody.style.visibility = '';
 	}
+
+	renderToBottomLink(settings);
 
 	if (settings[OptionKeys.pr.filesChanged.singleFileDiffing]) {
 		window.addEventListener('popstate', (e) => {

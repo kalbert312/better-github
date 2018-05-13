@@ -18,6 +18,10 @@ export const createOrGetPRFilesChangedTreeContainerEl = () => {
 	return element;
 };
 
+export const getPartialDiscussionHeaderEl = () => {
+	return document.querySelector("#partial-discussion-header");
+};
+
 const sorter = (a, b) => {
 	const isFileA = Boolean(a.href);
 	const isFileB = Boolean(b.href);
