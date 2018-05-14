@@ -5,13 +5,13 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const copyWebpackPlugins = [
 	{ from: "./src/icons" },
-	{ from: "./src/options" },
+	{ from: "./src/options/options.html" },
 ];
 
 module.exports = {
 	entry: {
 		main: path.join(__dirname, "src", "js", "index.jsx"),
-		options: path.join(__dirname, "src", "options", "options.js"),
+		options: path.join(__dirname, "src", "options", "index.jsx"),
 	},
 	output: {
 		path: path.join(__dirname, "build"),

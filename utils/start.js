@@ -6,9 +6,14 @@ webpack(
 	Object.assign(config, {
 		watch: true,
 	}),
-	err => {
+	(err, stats) => {
 		if (err) {
+			console.error(err);
 			throw err;
 		}
+		console.log(stats.toString({
+			chunks: true,
+			colors: true,
+		}));
 	},
 );
