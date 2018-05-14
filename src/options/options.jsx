@@ -151,8 +151,8 @@ class OptionsPage extends React.Component<Props> {
 											{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorAdded, "Added") }
 											{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorDeleted, "Deleted") }
 											{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorModified, "Modified") }
-											{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorMoved, "Moved") }
-											{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorRenamed, "Renamed") }
+											{/*{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorMoved, "Moved") } TODO: implement */}
+											{/*{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorRenamed, "Renamed") } TODO: implement */}
 										</Grid>
 									</div>
 								</Grid>
