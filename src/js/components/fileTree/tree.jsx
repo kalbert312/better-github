@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
 import Branch from './branch.jsx';
-import type { FileNode } from '../lib';
-import { isElementVisible, loadLargeDiffForDiffPanel } from '../lib';
-import type { ExtSettings } from '../../common/options';
-import { OptionKeys } from '../../common/options';
+import type { FileNode } from '../../lib';
+import { isElementVisible, loadLargeDiffForDiffPanel } from '../../lib';
+import type { ExtSettings } from '../../../common/options';
+import { OptionKeys } from '../../../common/options';
 
 type Props = {
 	root: FileNode,

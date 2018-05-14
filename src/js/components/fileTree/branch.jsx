@@ -3,7 +3,7 @@
 import React from 'react';
 import TreeView from 'react-treeview';
 import File from './file';
-import type { FileNode } from '../lib';
+import type { FileNode } from '../../lib';
 
 const Branch = (branchNode: FileNode) => {
 	const { nodeLabel, list, href, hasComments, diffElement, visibleElement, onClick } = branchNode;

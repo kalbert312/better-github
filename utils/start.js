@@ -6,7 +6,7 @@ webpack(
 	Object.assign(config, {
 		watch: true,
 	}),
-	function (err) {
+	err => {
 		if (err) {
 			throw err;
 		}

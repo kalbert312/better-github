@@ -1,4 +1,3 @@
-// Saves options to chrome.storage
 import { defaultExtensionOptions, OptionKeys } from '../common/options';
 
 const saveOptions = () => {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import fileIcons from 'file-icons-js';
-import type { FileNode } from '../lib';
+import type { FileNode } from '../../lib';
 
 const highlightColor = "#ebebeb";
 const transparentColor = "transparent";
