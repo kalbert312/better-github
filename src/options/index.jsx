@@ -38,7 +38,7 @@ class App extends React.Component<Props> {
 const bootstrap = () => {
 	chrome.storage.sync.get(defaultExtensionOptions, (settings) => {
 		ReactDOM.render(
-			<App chrome={ chrome } extSettings={ settings } />,
+			<App chrome={ chrome } extSettings={ settings }/>,
 			document.getElementById("root"),
 		);
 	});

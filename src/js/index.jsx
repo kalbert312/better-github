@@ -1,10 +1,10 @@
-import { observe } from './bridge/observation';
-import React from 'react';
-import { render } from 'react-dom';
-import Tree from './components/fileTree/tree';
-import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, FileStatuses, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from './bridge/github-elements';
-import type { ExtSettings } from '../common/options';
-import { defaultExtensionOptions, OptionKeys } from '../common/options';
+import { observe } from "./bridge/observation";
+import React from "react";
+import { render } from "react-dom";
+import Tree from "./components/fileTree/tree";
+import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, FileStatuses, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from "./bridge/github-elements";
+import type { ExtSettings } from "../common/options";
+import { defaultExtensionOptions, OptionKeys } from "../common/options";
 
 const { document } = window;
 
@@ -96,6 +96,10 @@ const injectStyles = (extSettings: ExtSettings) => {
 };
 
 const maybeRenderPRTree = (extSettings: ExtSettings) => {
+	if (!extSettings[OptionKeys.pr.filesChanged.fileTreeEnabled]) {
+		return;
+	}
+
 	const rootElement = createOrGetPRFilesChangedTreeContainerEl();
 	const enabled = !!rootElement;
 	document.body.classList.toggle("enable_better_github_pr", enabled);
