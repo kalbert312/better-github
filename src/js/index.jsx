@@ -1,3 +1,5 @@
+// @flow
+
 import { observe } from "./bridge/observation";
 import React from "react";
 import { render } from "react-dom";
