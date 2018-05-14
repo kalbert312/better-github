@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 import Branch from './branch.jsx';
-import type { FileNode } from '../../lib';
-import { isElementVisible, loadLargeDiffForDiffPanel } from '../../lib';
+import type { FileNode } from '../../bridge/github-elements';
+import { isElementVisible, loadLargeDiffForDiffPanel } from '../../bridge/github-elements';
 import type { ExtSettings } from '../../../common/options';
 import { OptionKeys } from '../../../common/options';
 

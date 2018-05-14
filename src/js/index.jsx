@@ -2,7 +2,7 @@ import { observe } from './bridge/observation';
 import React from 'react';
 import { render } from 'react-dom';
 import Tree from './components/fileTree/tree';
-import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from './lib';
+import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, FileStatuses, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from './bridge/github-elements';
 import type { ExtSettings } from '../common/options';
 import { defaultExtensionOptions, OptionKeys } from '../common/options';
 
@@ -40,13 +40,39 @@ const injectStyles = (extSettings: ExtSettings) => {
 	}
 	if (extSettings[OptionKeys.pr.filesChanged.fileTreeWidth]) {
 		cssToInject[".enable_better_github_pr .__better_github_pr"] = {
-			width: extSettings[OptionKeys.pr.filesChanged.fileTreeWidth],
+			"width": extSettings[OptionKeys.pr.filesChanged.fileTreeWidth],
 		};
 
 		cssToInject[".enable_better_github_pr .diff-view, .enable_better_github_pr .commit.full-commit.prh-commit"] = {
 			"margin-left": `calc(${extSettings[OptionKeys.pr.filesChanged.fileTreeWidth]} + 10px)`,
 		};
 	}
+
+	Object.values(FileStatuses).forEach((fileStatus) => {
+		let configKey;
+		switch (fileStatus) {
+			case FileStatuses.ADDED:
+				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorAdded;
+				break;
+			case FileStatuses.DELETED:
+				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorDeleted;
+				break;
+			case FileStatuses.MODIFIED:
+			default:
+				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorModified;
+				break;
+			case FileStatuses.MOVED:
+				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorMoved;
+				break;
+			case FileStatuses.RENAMED:
+				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorRenamed;
+				break;
+		}
+
+		cssToInject[`.enable_better_github_pr .github-pr-file[data-file-status="${fileStatus}"] a`] = {
+			"color": `${extSettings[configKey]}`,
+		};
+	});
 
 	const cssSelectors = Object.keys(cssToInject);
 	if (!cssSelectors.length) {

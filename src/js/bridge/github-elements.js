@@ -1,9 +1,9 @@
 // @flow
 
-import type { ExtSettings } from '../common/options';
-import { OptionKeys } from '../common/options';
+import type { ExtSettings } from '../../common/options';
+import { OptionKeys } from '../../common/options';
 
-export const createOrGetPRFilesChangedTreeContainerEl = () => {
+export const createOrGetPRFilesChangedTreeContainerEl = (): ?HTMLElement => {
 	const injectionElement = document.querySelector(".pr-toolbar");
 	if (!injectionElement) {
 		return;
@@ -18,11 +18,11 @@ export const createOrGetPRFilesChangedTreeContainerEl = () => {
 	return element;
 };
 
-export const getPartialDiscussionHeaderEl = () => {
+export const getPartialDiscussionHeaderEl = (): ?HTMLElement => {
 	return document.querySelector("#partial-discussion-header");
 };
 
-const sorter = (a, b) => {
+const sorter = (a, b): number => {
 	const isFileA = Boolean(a.href);
 	const isFileB = Boolean(b.href);
 	if (isFileA === isFileB) {
@@ -34,7 +34,7 @@ const sorter = (a, b) => {
 	}
 };
 
-const hasCommentsForFileIndex = (fileIndex) => {
+const hasCommentsForFileIndex = (fileIndex): number => {
 	const diffTable = document.getElementById(`diff-${fileIndex}`);
 	if (!diffTable) {
 		return 0;
@@ -72,29 +72,71 @@ export const switchDiffPanelToHash = (extSettings: ExtSettings) => {
 		}
 	}
 
-	Array.prototype.slice.call(document.querySelectorAll(".file")).filter((el) => el !== excludedDiffPanelEl).forEach((el) => setDiffPanelHidden(el, true, extSettings));
+	Array.prototype.slice.call(document.querySelectorAll(".file"))
+		.filter((el) => el !== excludedDiffPanelEl)
+		.forEach((el) => setDiffPanelHidden(el, true, extSettings));
+
 	if (excludedDiffPanelEl) {
 		setDiffPanelHidden(excludedDiffPanelEl, false, extSettings);
 	}
 };
 
 export const setDiffPanelHidden = (diffElement: HTMLElement, hidden: boolean, extSettings: ExtSettings) => {
-	if (hidden) {
-		diffElement.classList.add('better-diff-hidden');
-	} else {
-		diffElement.classList.remove('better-diff-hidden');
-		if (extSettings[OptionKeys.pr.filesChanged.autoLoadLargeDiffs]) {
-			loadLargeDiffForDiffPanel(diffElement);
+	diffElement.classList.toggle('better-diff-hidden', hidden);
+	if (!hidden && extSettings[OptionKeys.pr.filesChanged.autoLoadLargeDiffs]) {
+		loadLargeDiffForDiffPanel(diffElement);
+	}
+};
+
+export const FileStatuses = Object.freeze({
+	ADDED: 'Added',
+	DELETED: 'Deleted',
+	MODIFIED: 'Modified',
+	MOVED: 'Moved',
+	RENAMED: 'Renamed',
+});
+export type FileStatus = $Values<typeof FileStatus>;
+
+export const getFileStatus = (diffEl: HTMLElement): FileStatus => {
+	const diffStatEl = diffEl.querySelector(".diffstat");
+	if (!diffStatEl) {
+		return null;
+	}
+
+	const addedCount = diffStatEl.querySelectorAll(".block-diff-added").length;
+	const deletedCount = diffStatEl.querySelectorAll(".block-diff-deleted").length;
+	const neutralCount = diffStatEl.querySelectorAll(".block-diff-neutral").length;
+	const renamed = !!diffStatEl.querySelector(`span[aria-label="File renamed without changed"]`);
+
+	let fileStatus = FileStatuses.MODIFIED;
+	if (addedCount || deletedCount || neutralCount) {
+		if (addedCount && !deletedCount && !neutralCount) {
+			fileStatus = FileStatuses.ADDED;
+		} else if (deletedCount && !addedCount && !neutralCount) {
+			fileStatus = FileStatuses.DELETED;
 		}
 	}
+
+	if (fileStatus !== FileStatuses.MODIFIED) {
+		const hasContext = !!diffEl.querySelector('.blob-code-context') || !!diffEl.querySelector('.diff-expander');
+		if (hasContext) {
+			fileStatus = FileStatuses.MODIFIED;
+		}
+	} else if (renamed) {
+		fileStatus = FileStatuses.RENAMED;
+	}
+
+	return fileStatus; // TODO: other statuses
 };
 
 export type FileNode = {
 	nodeLabel: string,
 	list: Array<FileNode>,
 	href: ?string,
-	hasComments: boolean,
-	diffElement: ?HTMLElement,
+	hasComments?: boolean,
+	diffElement?: HTMLElement,
+	diffElements?: Array<HTMLElement>,
+	fileStatus?: FileStatus,
 };
 
 export const createFileTree = (extSettings: ExtSettings) => {
@@ -123,6 +165,7 @@ export const createFileTree = (extSettings: ExtSettings) => {
 					href: (index === parts.length - 1) ? href : null,
 					hasComments,
 					diffElement,
+					fileStatus: getFileStatus(diffElement),
 				};
 				location.list.push(node);
 			}
@@ -136,7 +179,7 @@ export const createFileTree = (extSettings: ExtSettings) => {
 	};
 };
 
-export const isElementVisible = (el) => {
+export const isElementVisible = (el: HTMLElement): boolean => {
 	if (!el || el.classList.contains('better-diff-hidden')) {
 		return false;
 	}
