@@ -13,7 +13,8 @@ Optional auto-loading of large diffs
 
 Adds a link to the PR header to jump to the bottom of the page where the merge button and PR status is.
 
-Customizable options
+Customizable Options
+
 ![Options](assets/screenshot_options.png "Options")
 
 ## Development
