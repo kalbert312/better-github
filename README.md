@@ -4,17 +4,15 @@ Chrome extension that enhances the GitHub experience. Fork of Tal Bereznitskey's
 
 ## Features
 
-Optional PR File Tree
+- Optional PR File Tree
+- Optional Single File Diffing (experimental)
+- Optional auto-loading of large diffs
+- Adds a link to the PR header to jump to the bottom of the page where the merge button and PR status is.
+- Customizable Options
+
+## Screenshots
+
 ![GitHub PR Tree](assets/screenshot.png "GitHub Pull Request")
-
-Optional Single File Diffing (experimental)
-
-Optional auto-loading of large diffs
-
-Adds a link to the PR header to jump to the bottom of the page where the merge button and PR status is.
-
-Customizable Options
-
 ![Options](assets/screenshot_options.png "Options")
 
 ## Development
