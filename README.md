@@ -1,19 +1,20 @@
 # Better Github
 
-Fork of Tal Bereznitskey's [Github PR Tree](https://github.com/berzniz/github_pr_tree)
+Chrome extension that enhances the GitHub experience. Fork of Tal Bereznitskey's [Github PR Tree](https://github.com/berzniz/github_pr_tree)
 
-Adds a file tree to GitHub's Pull Request page
-![GitHub Pull Request](assets/screenshot.png "GitHub Pull Request")
+## Features
 
-Allows for single file diffing (experimental)
-Allows for autoloading of large diffs
+Optional PR File Tree
+![GitHub PR Tree](assets/screenshot.png "GitHub Pull Request")
+
+Optional Single File Diffing (experimental)
+
+Optional auto-loading of large diffs
+
 Adds a link to the PR header to jump to the bottom of the page where the merge button and PR status is.
 
-Extension options that allow customizing:
-- Mostly global page width
-- PR Tree width
-- Single file diff on/off
-- Autoload large diffs on/off
+Customizable options
+![Options](assets/screenshot_options.png "Options")
 
 ## Development
 
@@ -30,14 +31,3 @@ Extension options that allow customizing:
 3. Make changes
 
 4. Click "Reload" on Chrome's "Manage Extensions" tab
-
-## History
-
-Find the change log here: [Changelog](https://github.com/berzniz/github_pr_tree/releases)
-
-## Who made this?
-
-Tal Bereznitskey. Find me on Twitter as [@ketacode](https://twitter.com/ketacode).
-
-This is an open-source community project and is not endorsed or affiliated with GitHub.
-

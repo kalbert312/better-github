@@ -1,6 +1,6 @@
 {
-	"name": "GitHub Pull Request Tree",
-	"short_name": "GitHub PRs",
+	"name": "Better GitHub",
+	"short_name": "Better GitHub",
 	"permissions": [
 		"*://*.github.com/*",
 		"storage"
