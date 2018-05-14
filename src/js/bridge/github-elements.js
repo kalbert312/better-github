@@ -1,7 +1,7 @@
 // @flow
 
-import type { ExtSettings } from '../../common/options';
-import { OptionKeys } from '../../common/options';
+import type { ExtSettings } from "../../common/options";
+import { OptionKeys } from "../../common/options";
 
 export const createOrGetPRFilesChangedTreeContainerEl = (): ?HTMLElement => {
 	const injectionElement = document.querySelector(".pr-toolbar");
@@ -118,7 +118,7 @@ export const getFileStatus = (diffEl: HTMLElement): FileStatus => {
 	}
 
 	if (fileStatus !== FileStatuses.MODIFIED) {
-		const hasContext = !!diffEl.querySelector('.blob-code-context') || !!diffEl.querySelector('.diff-expander');
+		const hasContext = !!diffEl.querySelector('.blob-code-context') || !!diffEl.querySelector('.diff-expander'); // TODO: may fail on non-loaded diffs... maybe make API call for large diffs?
 		if (hasContext) {
 			fileStatus = FileStatuses.MODIFIED;
 		}
