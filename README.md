@@ -17,21 +17,30 @@ Chrome extension that enhances the GitHub experience. Fork of Tal Bereznitskey's
 
 ## Build
 
-For public GitHub:
-```bash
-$ yarn build
-$ yarn crx
-```
+1. Install:
+	```bash
+	yarn install
+	```
 
-For hosted GitHub:
-```bash
-$ yarn build --match=host_pattern
-$ yarn crx
-```
+2. Build:
+	```bash
+	yarn build
+	```
+	
+	...or for hosted GitHub:
+	
+	```bash
+	yarn build --match=host_pattern
+	```
+	
+	host_pattern must follow pattern rule described here: https://developer.chrome.com/apps/match_patterns
+	Example: `*://*.github.mycompany.com/*`
+	
+3. Package: 
+	```bash
+	yarn crx
+	```
 
-host_pattern must follow pattern rule described here: https://developer.chrome.com/apps/match_patterns
-
-Example: `*://*.github.mycompany.com/*`
 
 ## Install to Chrome
 Drag the generated `.crx` file in `crx` directory into the Chrome Extension page.
