@@ -1,11 +1,12 @@
 {
-	"name": "github_pr_tree",
+	"name": "better-github",
 	"version": "1.0.0",
-	"description": "Add a file tree to GitHub's Pull Request",
+	"description": "Improves the GitHub experience in Google Chrome",
 	"scripts": {
 		"build": "node utils/build.js",
 		"start": "node utils/start.js",
-		"standard": "standard"
+		"standard": "standard",
+		"crx": "mkdir -p crx && ./node_modules/crx/bin/crx.js pack build -o crx/better-github.crx"
 	},
 	"dependencies": {
 		"@material-ui/core": "^1.0.0-rc.0",
@@ -45,8 +46,10 @@
 		"babel-cli": "^6.26.0",
 		"babel-plugin-transform-class-properties": "^6.24.1",
 		"babel-preset-flow": "^6.23.0",
+		"crx": "^3.2.1",
 		"flow-bin": "^0.72.0",
 		"husky": "^0.13.4",
+		"minimist": "^1.2.0",
 		"snazzy": "^7.0.0",
 		"standard": "^10.0.2",
 		"webstore-upload": "^0.0.7"

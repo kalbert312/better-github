@@ -15,6 +15,27 @@ Chrome extension that enhances the GitHub experience. Fork of Tal Bereznitskey's
 ![GitHub PR Tree](assets/screenshot.png "GitHub Pull Request")
 ![Options](assets/screenshot_options.png "Options")
 
+## Build
+
+For public GitHub:
+```bash
+$ yarn build
+$ yarn crx
+```
+
+For hosted GitHub:
+```bash
+$ yarn build --match=host_pattern
+$ yarn crx
+```
+
+host_pattern must follow pattern rule described here: https://developer.chrome.com/apps/match_patterns
+
+Example: `*://*.github.mycompany.com/*`
+
+## Install to Chrome
+Drag the generated `.crx` file in `crx` directory into the Chrome Extension page.
+
 ## Development
 
 1. Install:
