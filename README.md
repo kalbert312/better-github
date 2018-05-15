@@ -1,14 +1,14 @@
-# Better Github
+# Better GitHub
 
 Chrome extension that enhances the GitHub experience. Fork of Tal Bereznitskey's [Github PR Tree](https://github.com/berzniz/github_pr_tree)
 
 ## Features
 
+- Configurable page width
 - Optional PR File Tree
 - Optional Single File Diffing (experimental)
 - Optional auto-loading of large diffs
 - Adds a link to the PR header to jump to the bottom of the page where the merge button and PR status is.
-- Customizable Options
 
 ## Screenshots
 
