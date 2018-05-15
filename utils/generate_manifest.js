@@ -9,8 +9,8 @@ manifest.version = process.env.extension_version || process.env.npm_package_vers
 
 const args = parseArgs(process.argv.slice(2));
 if (args.match) {
-	manifest.permissions[0] = args.match;
-	manifest.content_scripts[0].matches[0] = args.match;
+	manifest.permissions.push(args.match);
+	manifest.content_scripts[0].matches.push(args.match);
 }
 
 fileSystem.writeFileSync(
