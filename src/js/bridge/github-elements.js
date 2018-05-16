@@ -83,7 +83,7 @@ export const switchDiffPanelToHash = (extSettings: ExtSettings) => {
 
 export const setDiffPanelHidden = (diffElement: HTMLElement, hidden: boolean, extSettings: ExtSettings) => {
 	diffElement.classList.toggle('better-diff-hidden', hidden);
-	if (!hidden && extSettings[OptionKeys.pr.filesChanged.autoLoadLargeDiffs]) {
+	if (!hidden && extSettings[OptionKeys.diff.filesChanged.autoLoadLargeDiffs]) {
 		loadLargeDiffForDiffPanel(diffElement);
 	}
 };

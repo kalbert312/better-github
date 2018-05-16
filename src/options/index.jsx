@@ -38,7 +38,16 @@ class App extends React.Component<Props> {
 }
 
 const bootstrap = () => {
+	ReactDOM.render(
+		<span>Loading...</span>,
+		document.getElementById("root"),
+	);
+
 	chrome.storage.sync.get(defaultExtensionOptions, (settings) => {
+		if (chrome.runtime.lastError) {
+			throw new Error(chrome.runtime.lastError);
+		}
+
 		ReactDOM.render(
 			<App chrome={ chrome } extSettings={ settings }/>,
 			document.getElementById("root"),

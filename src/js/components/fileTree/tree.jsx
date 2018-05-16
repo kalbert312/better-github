@@ -1,10 +1,10 @@
 // @flow
-import React from 'react';
-import Branch from './branch.jsx';
-import type { FileNode } from '../../bridge/github-elements';
-import { isElementVisible, loadLargeDiffForDiffPanel } from '../../bridge/github-elements';
-import type { ExtSettings } from '../../../common/options';
-import { OptionKeys } from '../../../common/options';
+import React from "react";
+import Branch from "./branch.jsx";
+import type { FileNode } from "../../bridge/github-elements";
+import { isElementVisible, loadLargeDiffForDiffPanel } from "../../bridge/github-elements";
+import type { ExtSettings } from "../../../common/options";
+import { OptionKeys } from "../../../common/options";
 
 type Props = {
 	root: FileNode,
@@ -45,7 +45,7 @@ class Tree extends React.Component<Props> {
 		const { root, extSettings } = this.props;
 		const { diffElements = [] } = root;
 		const visibleDiffElements = diffElements.filter(isElementVisible);
-		if (!extSettings[OptionKeys.pr.filesChanged.singleFileDiffing] && extSettings[OptionKeys.pr.filesChanged.autoLoadLargeDiffs]) {
+		if (!extSettings[OptionKeys.diff.filesChanged.singleFileDiffing] && extSettings[OptionKeys.diff.filesChanged.autoLoadLargeDiffs]) {
 			visibleDiffElements.forEach((el) => {
 				loadLargeDiffForDiffPanel(el);
 			});
@@ -74,7 +74,7 @@ class Tree extends React.Component<Props> {
 
 		return (
 			<div id="better-github-pr-tree">
-				{ !extSettings[OptionKeys.pr.filesChanged.singleFileDiffing] ? <button onClick={ this.onClose } className='close_button'>✖</button> : null }
+				{ !extSettings[OptionKeys.diff.filesChanged.singleFileDiffing] ? <button onClick={ this.onClose } className='close_button'>✖</button> : null }
 				{ root.list.map(node => (
 					<span key={ node.nodeLabel }>
 						<Branch { ...node } visibleElement={ visibleElement }/>

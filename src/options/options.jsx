@@ -28,20 +28,28 @@ class OptionsPage extends React.Component<Props> {
 		this.setState({
 			isSaving: true,
 		});
+
 		this.props.chrome.storage.sync.set(this.state.extSettings, () => {
-			this.setState({
+			const newState = {
 				isSaving: false,
-				showSavedSnack: true,
-			});
-			if (this.props.onSave) {
+				showSnack: "success",
+			};
+			if (this.props.chrome.runtime.lastError) {
+				console.error(this.props.chrome.runtime.lastError);
+				newState.showSnack = "fail";
+			}
+			this.setState(newState);
+			if (this.props.onSave && newState.showSnack !== "fail") {
 				this.props.onSave(this.state.extSettings);
 			}
 		});
+
+		this.props.chrome.storage.local.set(this.state.extSettings);
 	};
 
 	onSnackClose = () => {
 		this.setState({
-			showSavedSnack: false,
+			showSnack: false,
 		});
 	};
 
@@ -61,8 +69,8 @@ class OptionsPage extends React.Component<Props> {
 		}
 
 		const childSettingChanges = {};
-		if (settingsKey === OptionKeys.pr.filesChanged.fileTreeEnabled && !newValue) {
-			childSettingChanges[OptionKeys.pr.filesChanged.singleFileDiffing] = false;
+		if (settingsKey === OptionKeys.diff.filesChanged.fileTreeEnabled && !newValue) {
+			childSettingChanges[OptionKeys.diff.filesChanged.singleFileDiffing] = false;
 		}
 
 		this.setState({
@@ -120,39 +128,39 @@ class OptionsPage extends React.Component<Props> {
 								<label htmlFor="pr-files-file-tree">Enable File Tree</label>
 								<Switch
 									color="primary"
-									checked={ extSettings[OptionKeys.pr.filesChanged.fileTreeEnabled] }
+									checked={ extSettings[OptionKeys.diff.filesChanged.fileTreeEnabled] }
 									id="pr-files-file-tree"
-									onChange={ this.getChangeHandler(OptionKeys.pr.filesChanged.fileTreeEnabled, "switch") }
+									onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.fileTreeEnabled, "switch") }
 								/>
 							</Grid>
-							{ extSettings[OptionKeys.pr.filesChanged.fileTreeEnabled] &&
+							{ extSettings[OptionKeys.diff.filesChanged.fileTreeEnabled] &&
 							<div style={ { marginLeft: "30px" } }>
 								<TextField
 									helperText="any valid CSS width value (e.g. 400px)"
 									id="pr-files-tree-width"
 									label="File Tree Width"
-									onChange={ this.getChangeHandler(OptionKeys.pr.filesChanged.fileTreeWidth) }
+									onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.fileTreeWidth) }
 									margin="normal"
-									value={ extSettings[OptionKeys.pr.filesChanged.fileTreeWidth] }
+									value={ extSettings[OptionKeys.diff.filesChanged.fileTreeWidth] }
 								/>
 								<Grid container={ true } justify="space-between" alignItems="center">
 									<label htmlFor="pr-files-single-diff">Single File Diffing (Experimental)</label>
 									<Switch
 										color="primary"
-										checked={ extSettings[OptionKeys.pr.filesChanged.singleFileDiffing] }
+										checked={ extSettings[OptionKeys.diff.filesChanged.singleFileDiffing] }
 										id="pr-files-single-diff"
-										onChange={ this.getChangeHandler(OptionKeys.pr.filesChanged.singleFileDiffing, "switch") }
+										onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.singleFileDiffing, "switch") }
 									/>
 								</Grid>
 								<Grid container={ true } justify="space-between" alignItems="center">
 									<label>File Colors</label>
 									<div>
 										<Grid container={ true } justify="space-between" alignItems="center">
-											{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorAdded, "Added") }
-											{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorDeleted, "Deleted") }
-											{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorModified, "Modified") }
-											{/*{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorMoved, "Moved") } TODO: implement */}
-											{/*{ this.getColorPicker(extSettings, OptionKeys.pr.filesChanged.fileTreeFileColorRenamed, "Renamed") } TODO: implement */}
+											{ this.getColorPicker(extSettings, OptionKeys.diff.filesChanged.fileTreeFileColorAdded, "Added") }
+											{ this.getColorPicker(extSettings, OptionKeys.diff.filesChanged.fileTreeFileColorDeleted, "Deleted") }
+											{ this.getColorPicker(extSettings, OptionKeys.diff.filesChanged.fileTreeFileColorModified, "Modified") }
+											{ this.getColorPicker(extSettings, OptionKeys.diff.filesChanged.fileTreeFileColorMoved, "Moved") }
+											{ this.getColorPicker(extSettings, OptionKeys.diff.filesChanged.fileTreeFileColorRenamed, "Renamed") }
 										</Grid>
 									</div>
 								</Grid>
@@ -162,9 +170,9 @@ class OptionsPage extends React.Component<Props> {
 								<label htmlFor="pr-files-auto-load-large-diff">Auto Load Large Diffs</label>
 								<Switch
 									color="primary"
-									checked={ extSettings[OptionKeys.pr.filesChanged.autoLoadLargeDiffs] }
+									checked={ extSettings[OptionKeys.diff.filesChanged.autoLoadLargeDiffs] }
 									id="pr-files-auto-load-large-diff"
-									onChange={ this.getChangeHandler(OptionKeys.pr.filesChanged.autoLoadLargeDiffs, "switch") }
+									onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.autoLoadLargeDiffs, "switch") }
 								/>
 							</Grid>
 							<div>
@@ -177,10 +185,10 @@ class OptionsPage extends React.Component<Props> {
 									horizontal: "left",
 								} }
 								onClose={ this.onSnackClose }
-								open={ this.state.showSavedSnack }
+								open={ this.state.showSnack }
 								autoHideDuration={ 2500 }
 								message={
-									<span>Settings saved!</span>
+									<span>{ this.state.showSnack !== "fail" ? "Settings saved!" : "Failed to save settings :(" }</span>
 								}
 							/>
 						</FormGroup>

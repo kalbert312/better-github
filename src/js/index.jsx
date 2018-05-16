@@ -10,12 +10,18 @@ import { defaultExtensionOptions, OptionKeys } from "../common/options";
 
 const { document } = window;
 
-__webpack_public_path__ = window.chrome.extension.getURL(''); // allows proper loading of static assets
+__webpack_public_path__ = window.chrome.extension.getURL(""); // allows proper loading of static assets
 
 let settings;
-chrome.storage.sync.get(defaultExtensionOptions, (extSettings) => { settings = extSettings; });
+let error;
+chrome.storage.sync.get(defaultExtensionOptions, (extSettings) => {
+	if (chrome.runtime.lastError) {
+		error = chrome.runtime.lastError;
+	}
+	settings = extSettings;
+});
 
-const ajaxLoaderSelector = '.diff-progressive-loader';
+const ajaxLoaderSelector = ".diff-progressive-loader";
 
 const pjaxContainerSelector = "[data-pjax-container]";
 let pjaxContainerObserver;
@@ -40,13 +46,13 @@ const injectStyles = (extSettings: ExtSettings) => {
 			"width": extSettings[OptionKeys.common.pageWidth],
 		};
 	}
-	if (extSettings[OptionKeys.pr.filesChanged.fileTreeWidth]) {
+	if (extSettings[OptionKeys.diff.filesChanged.fileTreeWidth]) {
 		cssToInject[".enable_better_github_pr .__better_github_pr"] = {
-			"width": extSettings[OptionKeys.pr.filesChanged.fileTreeWidth],
+			"width": extSettings[OptionKeys.diff.filesChanged.fileTreeWidth],
 		};
 
 		cssToInject[".enable_better_github_pr .diff-view, .enable_better_github_pr .commit.full-commit.prh-commit"] = {
-			"margin-left": `calc(${extSettings[OptionKeys.pr.filesChanged.fileTreeWidth]} + 10px)`,
+			"margin-left": `calc(${extSettings[OptionKeys.diff.filesChanged.fileTreeWidth]} + 10px)`,
 		};
 	}
 
@@ -54,20 +60,20 @@ const injectStyles = (extSettings: ExtSettings) => {
 		let configKey;
 		switch (fileStatus) {
 			case FileStatuses.ADDED:
-				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorAdded;
+				configKey = OptionKeys.diff.filesChanged.fileTreeFileColorAdded;
 				break;
 			case FileStatuses.DELETED:
-				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorDeleted;
+				configKey = OptionKeys.diff.filesChanged.fileTreeFileColorDeleted;
 				break;
 			case FileStatuses.MODIFIED:
 			default:
-				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorModified;
+				configKey = OptionKeys.diff.filesChanged.fileTreeFileColorModified;
 				break;
 			case FileStatuses.MOVED:
-				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorMoved;
+				configKey = OptionKeys.diff.filesChanged.fileTreeFileColorMoved;
 				break;
 			case FileStatuses.RENAMED:
-				configKey = OptionKeys.pr.filesChanged.fileTreeFileColorRenamed;
+				configKey = OptionKeys.diff.filesChanged.fileTreeFileColorRenamed;
 				break;
 		}
 
@@ -98,7 +104,7 @@ const injectStyles = (extSettings: ExtSettings) => {
 };
 
 const maybeRenderPRTree = (extSettings: ExtSettings) => {
-	if (!extSettings[OptionKeys.pr.filesChanged.fileTreeEnabled]) {
+	if (!extSettings[OptionKeys.diff.filesChanged.fileTreeEnabled]) {
 		return;
 	}
 
@@ -112,7 +118,7 @@ const maybeRenderPRTree = (extSettings: ExtSettings) => {
 	const { tree } = createFileTree(settings);
 	render(<Tree root={ tree } extSettings={ settings }/>, rootElement);
 
-	const singleFileDiffing = extSettings[OptionKeys.pr.filesChanged.singleFileDiffing];
+	const singleFileDiffing = extSettings[OptionKeys.diff.filesChanged.singleFileDiffing];
 	if (singleFileDiffing) {
 		switchDiffPanelToHash(extSettings);
 	}
@@ -129,7 +135,7 @@ const maybeRenderToBottomLink = (extSettings: ExtSettings) => {
 	}
 
 	const onClick = () => {
-		const footer = document.querySelector('.footer');
+		const footer = document.querySelector(".footer");
 		if (footer) {
 			footer.scrollIntoView();
 		}
@@ -141,19 +147,37 @@ const maybeRenderToBottomLink = (extSettings: ExtSettings) => {
 };
 
 const init = () => {
-	let contentBody = document.body.querySelector('.application-main');
+	let contentBody = document.body.querySelector(".application-main");
 	if (contentBody) {
-		contentBody.style.visibility = 'hidden';
+		contentBody.style.visibility = "hidden";
 	}
 
-	require('./style.css');
-	const start = new Date();
-	let error;
+	require("./style.css");
+
+	let start = new Date();
+	let localStorageQueried;
 	while (!settings) {
-		const now = new Date();
-		if ((now - start) / 1000 > 15) {
-			error = "Failed to load extension settings.";
+		if (error) {
 			break;
+		}
+		const now = new Date();
+		if ((now - start) / 1000 > 1) {
+			if (localStorageQueried) {
+				error = "Better GitHub | Failed to load extension settings from sync storage and local storage. Aborting.";
+				break;
+			}
+
+			console.error("Better GitHub | Failed to load extension settings from sync storage. Falling back to local storage...");
+
+			chrome.storage.local.get(defaultExtensionOptions, (extSettings) => {
+				if (chrome.runtime.lastError) {
+					error = chrome.runtime.lastError;
+				}
+				settings = extSettings;
+			});
+
+			start = now;
+			localStorageQueried = true;
 		}
 	}
 
@@ -161,7 +185,7 @@ const init = () => {
 		injectStyles(settings);
 	}
 	if (contentBody) {
-		contentBody.style.visibility = '';
+		contentBody.style.visibility = "";
 	}
 	if (error) {
 		throw new Error(error);
@@ -169,7 +193,7 @@ const init = () => {
 };
 
 // init; running at document_start so we need to wait for DOMContentLoaded
-window.addEventListener('DOMContentLoaded', (e) => {
+window.addEventListener("DOMContentLoaded", (e) => {
 	try {
 		init();
 	} catch (e) {
@@ -177,8 +201,8 @@ window.addEventListener('DOMContentLoaded', (e) => {
 		return;
 	}
 
-	if (settings[OptionKeys.pr.filesChanged.singleFileDiffing]) {
-		window.addEventListener('popstate', (e) => {
+	if (settings[OptionKeys.diff.filesChanged.singleFileDiffing]) {
+		window.addEventListener("popstate", (e) => {
 			switchDiffPanelToHash(settings);
 		});
 	}
