@@ -161,7 +161,7 @@ const init = () => {
 			break;
 		}
 		const now = new Date();
-		if ((now - start) / 1000 > 1) {
+		if ((now - start) / 1000 > 2) {
 			if (localStorageQueried) {
 				error = "Better GitHub | Failed to load extension settings from sync storage and local storage. Aborting.";
 				break;
