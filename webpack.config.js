@@ -12,6 +12,7 @@ module.exports = {
 	entry: {
 		main: path.join(__dirname, "src", "js", "index.jsx"),
 		options: path.join(__dirname, "src", "options", "index.jsx"),
+		background: path.join(__dirname, "src", "js", "background", "index.js"),
 	},
 	output: {
 		path: path.join(__dirname, "build"),

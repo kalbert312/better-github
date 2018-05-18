@@ -6,7 +6,7 @@ import { render } from "react-dom";
 import Tree from "./components/fileTree/tree";
 import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, FileStatuses, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from "./bridge/github-elements";
 import type { ExtSettings } from "../common/options";
-import { defaultExtensionOptions, OptionKeys } from "../common/options";
+import { OptionKeys } from "../common/options";
 
 const { document } = window;
 
@@ -14,12 +14,6 @@ __webpack_public_path__ = window.chrome.extension.getURL(""); // allows proper l
 
 let settings;
 let error;
-chrome.storage.sync.get(defaultExtensionOptions, (extSettings) => {
-	if (chrome.runtime.lastError) {
-		error = chrome.runtime.lastError;
-	}
-	settings = extSettings;
-});
 
 const ajaxLoaderSelector = ".diff-progressive-loader";
 
@@ -147,66 +141,47 @@ const maybeRenderToBottomLink = (extSettings: ExtSettings) => {
 };
 
 const init = () => {
-	let contentBody = document.body.querySelector(".application-main");
-	if (contentBody) {
-		contentBody.style.visibility = "hidden";
+	let containers = Array.prototype.slice.call(document.body.querySelectorAll(".container"));
+	if (containers && containers.length) {
+		containers.forEach((c) => c.style.visibility = "hidden");
 	}
 
 	require("./style.css");
 
-	let start = new Date();
-	let localStorageQueried;
-	while (!settings) {
-		if (error) {
-			break;
+	chrome.runtime.sendMessage({ type: "getSettings" }, (response) => {
+		if (!response || response.error) {
+			error = "Better GitHub | Failed to load extension settings from sync storage.";
 		}
-		const now = new Date();
-		if ((now - start) / 1000 > 2) {
-			if (localStorageQueried) {
-				error = "Better GitHub | Failed to load extension settings from sync storage and local storage. Aborting.";
-				break;
+		settings = response.settings;
+		if (!error) {
+			injectStyles(settings);
+		}
+		setTimeout(() => {
+			if (containers && containers.length) {
+				containers.forEach((c) => c.style.visibility = "");
 			}
-
-			console.error("Better GitHub | Failed to load extension settings from sync storage. Falling back to local storage...");
-
-			chrome.storage.local.get(defaultExtensionOptions, (extSettings) => {
-				if (chrome.runtime.lastError) {
-					error = chrome.runtime.lastError;
-				}
-				settings = extSettings;
-			});
-
-			start = now;
-			localStorageQueried = true;
+		}, 50);
+		if (error) {
+			console.error(error);
+			return;
 		}
-	}
 
-	if (!error) {
-		injectStyles(settings);
-	}
-	if (contentBody) {
-		contentBody.style.visibility = "";
-	}
-	if (error) {
-		throw new Error(error);
-	}
+		if (settings[OptionKeys.diff.filesChanged.singleFileDiffing]) {
+			window.addEventListener("popstate", (e) => {
+				switchDiffPanelToHash(settings);
+			});
+		}
+
+		onPjaxContainerMutated(settings);
+	});
 };
 
-// init; running at document_start so we need to wait for DOMContentLoaded
 window.addEventListener("DOMContentLoaded", (e) => {
 	try {
 		init();
 	} catch (e) {
 		console.error(e);
-		return;
 	}
-
-	if (settings[OptionKeys.diff.filesChanged.singleFileDiffing]) {
-		window.addEventListener("popstate", (e) => {
-			switchDiffPanelToHash(settings);
-		});
-	}
-
-	onPjaxContainerMutated(settings);
 });
+
 

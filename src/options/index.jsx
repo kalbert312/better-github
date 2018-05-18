@@ -24,6 +24,7 @@ class App extends React.Component<Props> {
 		this.setState({
 			extSettings: savedSettings,
 		});
+		chrome.runtime.sendMessage({ type: "refreshSettings" });
 	};
 
 	render() {
