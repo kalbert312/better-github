@@ -42,6 +42,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		sendResponse({ settings });
 	} else if (message.type === "refreshSettings") {
-		getExtSettingsFromStorage();
+		getExtSettingsFromStorage("sync");
 	}
 });
