@@ -13,7 +13,6 @@ const { document } = window;
 __webpack_public_path__ = window.chrome.extension.getURL(""); // allows proper loading of static assets
 
 let settings;
-let error;
 
 const ajaxLoaderSelector = ".diff-progressive-loader";
 
@@ -149,8 +148,9 @@ const init = () => {
 	require("./style.css");
 
 	chrome.runtime.sendMessage({ type: "getSettings" }, (response) => {
+		let error;
 		if (!response || response.error) {
-			error = "Better GitHub | Failed to load extension settings from sync storage.";
+			error = `Better GitHub | ${response.error}`;
 		}
 		settings = response.settings;
 		if (!error) {
@@ -177,11 +177,7 @@ const init = () => {
 };
 
 window.addEventListener("DOMContentLoaded", (e) => {
-	try {
-		init();
-	} catch (e) {
-		console.error(e);
-	}
+	init();
 });
 
 
