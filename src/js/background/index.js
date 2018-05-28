@@ -3,13 +3,15 @@ import { defaultExtensionOptions } from "../../common/options";
 let settings;
 const maxTries = 2;
 
-const getExtSettingsFromStorage = (storageType: string) => {
-	chrome.storage[storageType].get(defaultExtensionOptions, (extSettings) => {
+const getExtSettingsFromStorage = () => {
+	console.debug("Better GitHub | Fetching extension settings...");
+	chrome.storage.sync.get(defaultExtensionOptions, (extSettings) => {
 		settings = extSettings;
+		console.debug("Better GitHub | Extension settings loaded.");
 	});
 };
 
-getExtSettingsFromStorage("sync");
+getExtSettingsFromStorage();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "getSettings") {
@@ -29,10 +31,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if (tries === maxTries) {
 					sendResponse({ error: "Failed to load extension settings" });
 					return;
-				} else if (tries === (maxTries - 1)) {
-					getExtSettingsFromStorage("local");
 				} else {
-					getExtSettingsFromStorage("sync");
+					getExtSettingsFromStorage();
 				}
 
 				start = new Date();
@@ -42,6 +42,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		sendResponse({ settings });
 	} else if (message.type === "refreshSettings") {
-		getExtSettingsFromStorage("sync");
+		getExtSettingsFromStorage();
 	}
 });
