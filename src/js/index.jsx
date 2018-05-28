@@ -35,7 +35,7 @@ const injectStyles = (extSettings: ExtSettings) => {
 	let cssToInject = {};
 
 	if (extSettings[OptionKeys.common.pageWidth]) {
-		cssToInject[".container"] = {
+		cssToInject[".container, .container-lg"] = {
 			"width": extSettings[OptionKeys.common.pageWidth],
 		};
 	}
