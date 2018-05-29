@@ -82,7 +82,7 @@ const injectStyles = (extSettings: ExtSettings) => {
 	}
 
 	const cssStr = cssSelectors.reduce((str, selector, index) => {
-		const cssPropValuePairs = Object.entries(cssToInject[selector]).map(([key, value]) => `${key}: ${value};`);
+		const cssPropValuePairs = Object.entries(cssToInject[selector]).map(([key, value]) => `${key}: ${value};`).join(' ');
 		str += `${selector} { ${cssPropValuePairs} }\n`;
 		return str;
 	}, "");
