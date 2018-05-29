@@ -59,12 +59,13 @@ export const switchDiffPanelToHash = (extSettings: ExtSettings) => {
 
 	let hash = document.location.hash;
 	if (hash && hash !== '') {
-		const anchorEl = document.querySelector(`a[href="${hash}"]`);
+		let anchorName = hash.substring(0, 38); // #diff-<32 char hash> ...if there is a line number/function jump in it, there will be extra appended
+		const anchorEl = document.querySelector(`a[href="${anchorName}"]`);
 		if (anchorEl) {
 			excludedDiffPanelEl = anchorEl.closest('.file');
 			if (!excludedDiffPanelEl) { // check data tags
-				hash = hash.substring(1); // strip #
-				const dataAnchorEl = document.querySelector(`[data-anchor="${hash}"]`);
+				anchorName = anchorName.substring(1); // strip #
+				const dataAnchorEl = document.querySelector(`[data-anchor="${anchorName}"]`);
 				if (dataAnchorEl) {
 					excludedDiffPanelEl = dataAnchorEl.closest('.file');
 				}
