@@ -89,6 +89,10 @@ export const setDiffPanelHidden = (diffElement: HTMLElement, hidden: boolean, ex
 	}
 };
 
+export const someNewMethod = () => {
+	return 0;
+};
+
 export const FileStatuses = Object.freeze({
 	ADDED: 'Added',
 	DELETED: 'Deleted',

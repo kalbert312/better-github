@@ -3,10 +3,10 @@
 import React from "react";
 import isEqual from "lodash.isequal";
 import cloneDeep from "clone-deep";
-import type { ExtSettings } from "../common/options";
-import { OptionKeys } from "../common/options";
+import type { ExtSettings } from "../../common/options";
+import { OptionKeys } from "../../common/options";
 import { Button, FormControl, FormGroup, FormLabel, Grid, Snackbar, Switch, TextField } from "@material-ui/core/es/index";
-import ColorPicker from "./ColorPicker";
+import ColorPicker from "../../options/ColorPicker";
 
 export type Props = {
 	chrome: Object,

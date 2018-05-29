@@ -24,6 +24,8 @@ class Tree extends React.Component<Props> {
 		};
 	}
 
+	// some changes
+
 	componentDidMount() {
 		window.addEventListener("DOMContentLoaded", this.onScroll, false);
 		window.addEventListener("load", this.onScroll, false);
@@ -83,6 +85,8 @@ class Tree extends React.Component<Props> {
 			</div>
 		);
 	}
+
+	// more changes
 }
 
 export default Tree;

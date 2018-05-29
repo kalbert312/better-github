@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import type { ExtSettings } from "../common/options";
 import { defaultExtensionOptions } from "../common/options";
-import OptionsPage from "./options";
+import OptionsPage from "../js/background/options";
 
 type Props = {
 	chrome: Object,
