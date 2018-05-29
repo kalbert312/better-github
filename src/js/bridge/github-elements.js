@@ -98,7 +98,22 @@ export const FileStatuses = Object.freeze({
 });
 export type FileStatus = $Values<typeof FileStatus>;
 
-export const getFileStatus = (diffEl: HTMLElement): FileStatus => {
+export const getFileStatus = (diffEl: HTMLElement, title: string): FileStatus => {
+	if (title.includes(" → ")) {
+		const titleParts = title.split(" → ");
+		const leftParts = titleParts[0].split("/");
+		const rightParts = titleParts[1].split("/");
+		if (leftParts.length !== rightParts.length) {
+			return FileStatuses.MOVED;
+		}
+		for (let i = 0; i < leftParts.length - 1; i++) {
+			if (leftParts[i] !== rightParts[i]) {
+				return FileStatuses.MOVED;
+			}
+		}
+		return FileStatuses.RENAMED;
+	}
+
 	const diffStatEl = diffEl.querySelector(".diffstat");
 	if (!diffStatEl) {
 		return null;
@@ -107,27 +122,18 @@ export const getFileStatus = (diffEl: HTMLElement): FileStatus => {
 	const addedCount = diffStatEl.querySelectorAll(".block-diff-added").length;
 	const deletedCount = diffStatEl.querySelectorAll(".block-diff-deleted").length;
 	const neutralCount = diffStatEl.querySelectorAll(".block-diff-neutral").length;
-	const renamed = !!diffStatEl.querySelector(`span[aria-label="File renamed without changed"]`);
+	const hasContext = !!diffEl.querySelector('.blob-code-context') || !!diffEl.querySelector('.diff-expander'); // TODO: may fail on non-loaded diffs... maybe make API call for large diffs?
 
 	let fileStatus = FileStatuses.MODIFIED;
-	if (addedCount || deletedCount || neutralCount) {
-		if (addedCount && !deletedCount && !neutralCount) {
+	if (addedCount || deletedCount || !hasContext) {
+		if (addedCount && !deletedCount && !hasContext) {
 			fileStatus = FileStatuses.ADDED;
-		} else if (deletedCount && !addedCount && !neutralCount) {
+		} else if (deletedCount && !addedCount && !hasContext) {
 			fileStatus = FileStatuses.DELETED;
 		}
 	}
 
-	if (fileStatus !== FileStatuses.MODIFIED) {
-		const hasContext = !!diffEl.querySelector('.blob-code-context') || !!diffEl.querySelector('.diff-expander'); // TODO: may fail on non-loaded diffs... maybe make API call for large diffs?
-		if (hasContext) {
-			fileStatus = FileStatuses.MODIFIED;
-		}
-	} else if (renamed) {
-		fileStatus = FileStatuses.RENAMED;
-	}
-
-	return fileStatus; // TODO: other statuses
+	return fileStatus;
 };
 
 export type FileNode = {
@@ -143,8 +149,10 @@ export type FileNode = {
 export const createFileTree = (extSettings: ExtSettings) => {
 	const fileInfo = [...document.querySelectorAll(".file-info > a")];
 	const files = fileInfo.map(({ title, href }) => {
-		title = title.split(" → ")[0];
-		return { title, href, parts: title.split("/") };
+		const fullTitle = title;
+		const titleParts = title.split(" → ");
+		title = titleParts.length > 1 ? titleParts[1] : titleParts[0];
+		return { fullTitle, title, href, parts: title.split("/") };
 	});
 	const tree: FileNode = {
 		nodeLabel: "/",
@@ -152,7 +160,7 @@ export const createFileTree = (extSettings: ExtSettings) => {
 		diffElements: []
 	};
 
-	files.forEach(({ parts, href }, fileIndex) => {
+	files.forEach(({ fullTitle, title, parts, href }, fileIndex) => {
 		let location = tree;
 		parts.forEach((part, index) => {
 			let node: FileNode = location.list.find(node => node.nodeLabel === part);
@@ -166,7 +174,7 @@ export const createFileTree = (extSettings: ExtSettings) => {
 					href: (index === parts.length - 1) ? href : null,
 					hasComments,
 					diffElement,
-					fileStatus: getFileStatus(diffElement),
+					fileStatus: getFileStatus(diffElement, fullTitle),
 				};
 				location.list.push(node);
 			}

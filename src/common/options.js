@@ -33,5 +33,5 @@ export const defaultExtensionOptions: ExtSettings = Object.freeze({
 	[OptionKeys.diff.filesChanged.fileTreeFileColorDeleted]: "#C0392B",
 	[OptionKeys.diff.filesChanged.fileTreeFileColorModified]: "#2980B9",
 	[OptionKeys.diff.filesChanged.fileTreeFileColorMoved]: "#8E44AD",
-	[OptionKeys.diff.filesChanged.fileTreeFileColorRenamed]: "#D35400",
+	[OptionKeys.diff.filesChanged.fileTreeFileColorRenamed]: "#F39C12",
 });
