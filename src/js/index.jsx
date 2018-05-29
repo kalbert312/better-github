@@ -37,6 +37,7 @@ const injectStyles = (extSettings: ExtSettings) => {
 	if (extSettings[OptionKeys.common.pageWidth]) {
 		cssToInject[".container, .container-lg"] = {
 			"width": extSettings[OptionKeys.common.pageWidth],
+			"max-width": "unset",
 		};
 	}
 	if (extSettings[OptionKeys.diff.filesChanged.fileTreeWidth]) {
@@ -150,9 +151,9 @@ const init = () => {
 	chrome.runtime.sendMessage({ type: "getSettings" }, (response) => {
 		let error;
 		if (!response || response.error) {
-			error = `Better GitHub | ${response.error}`;
+			error = `Better GitHub | ${response ? response.error : "An unknown error has occurred."}`;
 		}
-		settings = response.settings;
+		settings = response ? response.settings : null;
 		if (!error) {
 			injectStyles(settings);
 		}
