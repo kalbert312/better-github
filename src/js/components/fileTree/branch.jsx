@@ -8,7 +8,6 @@ const Branch = (props) => {
 	const { nodeLabel, list, type, href, hasComments, diffElement, visibleElement, fileStatus } = props;
 
 	if (type === "file") {
-		console.log(`diff: ${diffElement}, visible: ${visibleElement}`);
 		const isVisible = (diffElement === visibleElement);
 		return <File name={ nodeLabel } href={ href } hasComments={ hasComments } isVisible={ isVisible } fileStatus={ fileStatus }/>;
 	}

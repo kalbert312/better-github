@@ -25,7 +25,7 @@ export const getPartialDiscussionHeaderEl = (): ?HTMLElement => {
 
 const sorter = (a, b): number => {
 	const isFileA = a.type === "file";
-	const isFileB = a.type === "file";
+	const isFileB = b.type === "file";
 	if (isFileA === isFileB) {
 		return (b.nodeLabel > a.nodeLabel) ? -1 : ((a.nodeLabel > b.nodeLabel) ? 1 : 0);
 	} else if (isFileA && !isFileB) {
@@ -33,15 +33,6 @@ const sorter = (a, b): number => {
 	} else {
 		return -1;
 	}
-};
-
-const hasCommentsForFileIndex = (fileIndex): number => {
-	const diffTable = document.getElementById(`diff-${fileIndex}`);
-	if (!diffTable) {
-		return 0;
-	}
-
-	return diffTable.querySelectorAll(".inline-comments").length;
 };
 
 export const loadLargeDiffForDiffPanel = (buttonContainerEl) => {
@@ -154,7 +145,7 @@ export const createFileTree = (extSettings: ExtSettings, apiResponseData: ApiRes
 		};
 	});
 
-	apiResponseData.comments.forEach((commentData) => {
+	apiResponseData.comments.filter((commentData) => commentData.position != null).forEach((commentData) => {
 		const file = files.find((file) => file.path === commentData.path);
 		if (file) {
 			file.hasComments = true;
@@ -162,6 +153,7 @@ export const createFileTree = (extSettings: ExtSettings, apiResponseData: ApiRes
 	});
 
 	const rootNode: FileNode = {
+		type: "directory",
 		nodeLabel: "/",
 		list: [],
 		diffElements: []
@@ -175,16 +167,16 @@ export const createFileTree = (extSettings: ExtSettings, apiResponseData: ApiRes
 			let node: FileNode = nodeCursor.list.find(node => node.nodeLabel === part);
 
 			if (!node) {
-				const isFile = index === parts.length - 1;
+				const isDirectory = index < parts.length - 1;
 				let anchorName, diffElement;
-				if (isFile) {
+				if (!isDirectory) {
 					anchorName = getAnchorNameForPath(path);
 					diffElement = getDiffPanelElForAnchorName(anchorName);
 					rootNode.diffElements.push(diffElement);
 				}
 
 				node = {
-					type: isFile ? "file" : "directory",
+					type: isDirectory ? "directory" : "file",
 					nodeLabel: part,
 					list: [],
 					href: anchorName ? `#${anchorName}` : null,

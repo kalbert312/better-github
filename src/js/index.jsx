@@ -103,7 +103,6 @@ const maybeRenderPRTree = (extSettings: ExtSettings) => {
 	}
 
 	const host = window.location.host;
-	console.log(`HOST: ${host}`);
 	const apiToken = getApiTokenForHost(host, extSettings);
 	if (!apiToken) {
 		return;
@@ -165,6 +164,7 @@ export type GitHubPRFileData = {
 
 export type GitHubCommentData = {
 	path: string, // file path
+	position: ?number,
 };
 
 export type ApiResponseData = {
@@ -174,7 +174,7 @@ export type ApiResponseData = {
 
 const renderPRTreeWhenLoaded = (extSettings: ExtSettings, rootElement: HTMLElement, apiResponses: ApiResponseData) => {
 	if (document.querySelector(ajaxLoaderSelector)) {
-		setTimeout(renderPRTreeWhenLoaded.bind(this, settings, apiResponses), 50);
+		setTimeout(renderPRTreeWhenLoaded.bind(this, settings, rootElement, apiResponses), 50);
 		return;
 	}
 
