@@ -27,6 +27,15 @@ export const normalizeGitHubApiTokenDetailValues = (values: ?Array<GitHubApiToke
 	return values;
 };
 
+export const getApiTokenForHost = (host: string, extSettings: ExtSettings): ?string => {
+	if (!extSettings[OptionKeys.api.tokens]) {
+		return null;
+	}
+
+	const tokenDetail: GitHubApiTokenDetail = extSettings[OptionKeys.api.tokens].find((tokenDetail: GitHubApiTokenDetail) => host.toLowerCase().includes(tokenDetail.h.toLowerCase()));
+	return tokenDetail ? tokenDetail.t : null;
+};
+
 export const OptionKeys = {
 	api: {
 		tokens: "K",

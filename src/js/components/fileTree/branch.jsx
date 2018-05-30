@@ -1,16 +1,16 @@
 // @flow
 
-import React from 'react';
-import TreeView from 'react-treeview';
-import File from './file';
-import type { FileNode } from '../../bridge/github-elements';
+import React from "react";
+import TreeView from "react-treeview";
+import File from "./file";
 
-const Branch = (branchNode: FileNode) => {
-	const { nodeLabel, list, href, hasComments, diffElement, visibleElement, onClick, fileStatus } = branchNode;
+const Branch = (props) => {
+	const { nodeLabel, list, type, href, hasComments, diffElement, visibleElement, fileStatus } = props;
 
-	if (href) {
+	if (type === "file") {
+		console.log(`diff: ${diffElement}, visible: ${visibleElement}`);
 		const isVisible = (diffElement === visibleElement);
-		return <File name={ nodeLabel } href={ href } hasComments={ hasComments } isVisible={ isVisible } onClick={ onClick } fileStatus={ fileStatus }/>;
+		return <File name={ nodeLabel } href={ href } hasComments={ hasComments } isVisible={ isVisible } fileStatus={ fileStatus }/>;
 	}
 
 	return (

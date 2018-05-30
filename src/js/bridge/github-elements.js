@@ -2,6 +2,7 @@
 
 import type { ExtSettings } from "../../common/options";
 import { OptionKeys } from "../../common/options";
+import type { ApiResponseData } from "../index";
 
 export const createOrGetPRFilesChangedTreeContainerEl = (): ?HTMLElement => {
 	const injectionElement = document.querySelector(".pr-toolbar");
@@ -23,8 +24,8 @@ export const getPartialDiscussionHeaderEl = (): ?HTMLElement => {
 };
 
 const sorter = (a, b): number => {
-	const isFileA = Boolean(a.href);
-	const isFileB = Boolean(b.href);
+	const isFileA = a.type === "file";
+	const isFileB = a.type === "file";
 	if (isFileA === isFileB) {
 		return (b.nodeLabel > a.nodeLabel) ? -1 : ((a.nodeLabel > b.nodeLabel) ? 1 : 0);
 	} else if (isFileA && !isFileB) {
@@ -96,96 +97,123 @@ export const FileStatuses = Object.freeze({
 	MOVED: 'Moved',
 	RENAMED: 'Renamed',
 });
-export type FileStatus = $Values<typeof FileStatus>;
-
-export const getFileStatus = (diffEl: HTMLElement, title: string): FileStatus => {
-	if (title.includes(" → ")) {
-		const titleParts = title.split(" → ");
-		const leftParts = titleParts[0].split("/");
-		const rightParts = titleParts[1].split("/");
-		if (leftParts.length !== rightParts.length) {
-			return FileStatuses.MOVED;
-		}
-		for (let i = 0; i < leftParts.length - 1; i++) {
-			if (leftParts[i] !== rightParts[i]) {
-				return FileStatuses.MOVED;
-			}
-		}
-		return FileStatuses.RENAMED;
-	}
-
-	const diffStatEl = diffEl.querySelector(".diffstat");
-	if (!diffStatEl) {
-		return null;
-	}
-
-	const addedCount = diffStatEl.querySelectorAll(".block-diff-added").length;
-	const deletedCount = diffStatEl.querySelectorAll(".block-diff-deleted").length;
-	const neutralCount = diffStatEl.querySelectorAll(".block-diff-neutral").length;
-	const hasContext = !!diffEl.querySelector('.blob-code-context') || !!diffEl.querySelector('.diff-expander'); // TODO: may fail on non-loaded diffs... maybe make API call for large diffs?
-
-	let fileStatus = FileStatuses.MODIFIED;
-	if (addedCount || deletedCount || !hasContext) {
-		if (addedCount && !deletedCount && !hasContext) {
-			fileStatus = FileStatuses.ADDED;
-		} else if (deletedCount && !addedCount && !hasContext) {
-			fileStatus = FileStatuses.DELETED;
-		}
-	}
-
-	return fileStatus;
-};
+export type FileStatus = $Values<typeof FileStatuses>;
 
 export type FileNode = {
+	type: "file" | "directory",
 	nodeLabel: string,
 	list: Array<FileNode>,
-	href: ?string,
+	href?: string,
 	hasComments?: boolean,
 	diffElement?: HTMLElement,
 	diffElements?: Array<HTMLElement>,
 	fileStatus?: FileStatus,
 };
 
-export const createFileTree = (extSettings: ExtSettings) => {
-	const fileInfo = [...document.querySelectorAll(".file-info > a")];
-	const files = fileInfo.map(({ title, href }) => {
-		const fullTitle = title;
-		const titleParts = title.split(" → ");
-		title = titleParts.length > 1 ? titleParts[1] : titleParts[0];
-		return { fullTitle, title, href, parts: title.split("/") };
+type FileData = {
+	path: string,
+	parts: Array<String>,
+	name: string,
+	fileStatus: FileStatus,
+	hasComments: ?boolean,
+};
+
+export const createFileTree = (extSettings: ExtSettings, apiResponseData: ApiResponseData) => {
+	const files: Array<FileData> = apiResponseData.files.map((fileData) => {
+		const path = fileData.filename;
+		const parts = path.split("/");
+
+		let fileStatus: FileStatus;
+		switch (fileData.status) {
+			case "added":
+				fileStatus = FileStatuses.ADDED;
+				break;
+			case "modified":
+				fileStatus = FileStatuses.MODIFIED;
+				break;
+			case "renamed":
+				fileStatus = fileData.previous_filename === FileStatuses.RENAMED;
+
+				const previousPath = fileData.previous_filename;
+				const previousPathIndex = previousPath.lastIndexOf("/");
+				const pathIndex = path.lastIndexOf("/");
+				if (previousPathIndex !== pathIndex || (previousPathIndex === pathIndex && previousPathIndex !== -1 && previousPath.substring(0, previousPathIndex) !== path.substring(0, pathIndex))) {
+					fileStatus = FileStatuses.MOVED;
+				}
+				break;
+			case "removed":
+				fileStatus = FileStatuses.DELETED;
+				break;
+		}
+
+		return {
+			path,
+			parts,
+			name: parts[parts.length - 1],
+			fileStatus,
+		};
 	});
-	const tree: FileNode = {
+
+	apiResponseData.comments.forEach((commentData) => {
+		const file = files.find((file) => file.path === commentData.path);
+		if (file) {
+			file.hasComments = true;
+		}
+	});
+
+	const rootNode: FileNode = {
 		nodeLabel: "/",
 		list: [],
 		diffElements: []
 	};
 
-	files.forEach(({ fullTitle, title, parts, href }, fileIndex) => {
-		let location = tree;
+	files.forEach((file) => {
+		const { path, parts, fileStatus, hasComments } = file;
+
+		let nodeCursor = rootNode;
 		parts.forEach((part, index) => {
-			let node: FileNode = location.list.find(node => node.nodeLabel === part);
-			if (!node) { // file node
-				const hasComments = (hasCommentsForFileIndex(fileIndex) > 0);
-				const diffElement = document.getElementById(`diff-${fileIndex}`);
-				tree.diffElements.push(diffElement);
+			let node: FileNode = nodeCursor.list.find(node => node.nodeLabel === part);
+
+			if (!node) {
+				const isFile = index === parts.length - 1;
+				let anchorName, diffElement;
+				if (isFile) {
+					anchorName = getAnchorNameForPath(path);
+					diffElement = getDiffPanelElForAnchorName(anchorName);
+					rootNode.diffElements.push(diffElement);
+				}
+
 				node = {
+					type: isFile ? "file" : "directory",
 					nodeLabel: part,
 					list: [],
-					href: (index === parts.length - 1) ? href : null,
-					hasComments,
+					href: anchorName ? `#${anchorName}` : null,
 					diffElement,
-					fileStatus: getFileStatus(diffElement, fullTitle),
+					hasComments,
+					fileStatus,
 				};
-				location.list.push(node);
+				nodeCursor.list.push(node);
 			}
-			location.list = location.list.sort(sorter);
-			location = node;
+
+			nodeCursor.list = nodeCursor.list.sort(sorter);
+			nodeCursor = node;
 		});
 	});
+
 	return {
-		tree,
-		count: fileInfo.length
+		tree: rootNode,
+		count: files.length,
 	};
+};
+
+export const getAnchorNameForPath = (path: string): ?string => {
+	let el = document.querySelector(`[data-path="${path}"]`);
+	return el != null ? el.getAttribute("data-anchor") : null;
+};
+
+export const getDiffPanelElForAnchorName = (anchorName: string): ?HTMLElement => {
+	const anchorEl = document.querySelector(`a[name="${anchorName}"]`);
+	return anchorEl != null ? anchorEl.nextElementSibling : null;
 };
 
 export const isElementVisible = (el: HTMLElement): boolean => {

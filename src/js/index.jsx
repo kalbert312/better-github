@@ -6,7 +6,7 @@ import { render } from "react-dom";
 import Tree from "./components/fileTree/tree";
 import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, FileStatuses, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from "./bridge/github-elements";
 import type { ExtSettings } from "../common/options";
-import { OptionKeys } from "../common/options";
+import { getApiTokenForHost, OptionKeys } from "../common/options";
 
 const { document } = window;
 
@@ -102,6 +102,13 @@ const maybeRenderPRTree = (extSettings: ExtSettings) => {
 		return;
 	}
 
+	const host = window.location.host;
+	console.log(`HOST: ${host}`);
+	const apiToken = getApiTokenForHost(host, extSettings);
+	if (!apiToken) {
+		return;
+	}
+
 	const rootElement = createOrGetPRFilesChangedTreeContainerEl();
 	const enabled = !!rootElement;
 	document.body.classList.toggle("enable_better_github_pr", enabled);
@@ -109,16 +116,74 @@ const maybeRenderPRTree = (extSettings: ExtSettings) => {
 		return;
 	}
 
-	const { tree } = createFileTree(settings);
+	const headers = {
+		Accept: "application/vnd.github.v3+json",
+		Authorization: `token ${apiToken}`,
+	};
+	const pathTokens = window.location.pathname.split("/");
+	const owner = pathTokens[1];
+	const repo = pathTokens[2];
+	const prId = pathTokens[4];
+
+	render(<Tree root={ null } extSettings={ settings }/>, rootElement);
+
+	Promise
+		.all([
+			fetch(`https://api.${host}/repos/${owner}/${repo}/pulls/${prId}/files`, { headers }),
+			fetch(`https://api.${host}/repos/${owner}/${repo}/pulls/${prId}/comments`, { headers }),
+		])
+		.then((apiResponses) => {
+			return Promise.all([
+				apiResponses[0].json(),
+				apiResponses[1].json(),
+			]);
+		})
+		.then((apiResponses) => {
+			return {
+				files: apiResponses[0],
+				comments: apiResponses[1],
+			};
+		})
+		.then((apiResponses) => {
+			renderPRTreeWhenLoaded(settings, rootElement, apiResponses);
+		});
+};
+
+export type GitHubPRFileData = {
+	sha: string,
+	filename: string, // file path
+	status: "added" | "modified" | "renamed" | "removed",
+	additions: number,
+	deletions: number,
+	changes: number,
+	blob_url: string,
+	raw_url: string,
+	contents_url: string,
+	patch: string,
+	previous_filename?: ?string, // file path
+};
+
+export type GitHubCommentData = {
+	path: string, // file path
+};
+
+export type ApiResponseData = {
+	files: Array<GitHubPRFileData>,
+	comments: Array<GitHubCommentData>,
+};
+
+const renderPRTreeWhenLoaded = (extSettings: ExtSettings, rootElement: HTMLElement, apiResponses: ApiResponseData) => {
+	if (document.querySelector(ajaxLoaderSelector)) {
+		setTimeout(renderPRTreeWhenLoaded.bind(this, settings, apiResponses), 50);
+		return;
+	}
+
+	const { tree } = createFileTree(settings, apiResponses);
 	render(<Tree root={ tree } extSettings={ settings }/>, rootElement);
 
 	const singleFileDiffing = extSettings[OptionKeys.diff.filesChanged.singleFileDiffing];
 	if (singleFileDiffing) {
 		switchDiffPanelToHash(extSettings);
-	}
-
-	if (document.querySelector(ajaxLoaderSelector)) {
-		setTimeout(maybeRenderPRTree.bind(this, settings), 100);
 	}
 };
 
