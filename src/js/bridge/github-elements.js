@@ -132,7 +132,7 @@ export const createFileTree = (extSettings: ExtSettings, apiResponseData: ApiRes
 				fileStatus = FileStatuses.MODIFIED;
 				break;
 			case "renamed":
-				fileStatus = fileData.previous_filename === FileStatuses.RENAMED;
+				fileStatus = FileStatuses.RENAMED;
 
 				const previousPath = fileData.previous_filename;
 				const previousPathIndex = previousPath.lastIndexOf("/");
