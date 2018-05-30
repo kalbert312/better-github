@@ -5,6 +5,9 @@ export type ExtSettings = {
 };
 
 export const OptionKeys = {
+	api: {
+		tokens: "K",
+	},
 	common: {
 		pageWidth: "A",
 	},
@@ -24,6 +27,7 @@ export const OptionKeys = {
 };
 
 export const defaultExtensionOptions: ExtSettings = Object.freeze({
+	[OptionKeys.api.tokens]: [],
 	[OptionKeys.common.pageWidth]: null,
 	[OptionKeys.diff.filesChanged.fileTreeEnabled]: true,
 	[OptionKeys.diff.filesChanged.fileTreeWidth]: "240px",
