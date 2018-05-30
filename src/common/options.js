@@ -4,6 +4,29 @@ export type ExtSettings = {
 	[key: string]: mixed,
 };
 
+export type GitHubApiTokenDetail = {
+	h: string,
+	t: string,
+}
+
+export const normalizeGitHubApiTokenDetailValues = (values: ?Array<GitHubApiTokenDetail>): Array<GitHubApiTokenDetail> => {
+	if (values == null || !values.length) {
+		values = [{ h: null, t: null }];
+	}
+	values.forEach((tokenDetail) => {
+		["h", "t"].forEach((property) => {
+			if (tokenDetail[property] == null) {
+				return;
+			}
+			tokenDetail[property] = tokenDetail[property].trim();
+			if (tokenDetail[property] === "") {
+				tokenDetail[property] = null;
+			}
+		});
+	});
+	return values;
+};
+
 export const OptionKeys = {
 	api: {
 		tokens: "K",
@@ -27,7 +50,7 @@ export const OptionKeys = {
 };
 
 export const defaultExtensionOptions: ExtSettings = Object.freeze({
-	[OptionKeys.api.tokens]: [],
+	[OptionKeys.api.tokens]: [{ h: "github.com", t: null, }],
 	[OptionKeys.common.pageWidth]: null,
 	[OptionKeys.diff.filesChanged.fileTreeEnabled]: true,
 	[OptionKeys.diff.filesChanged.fileTreeWidth]: "240px",

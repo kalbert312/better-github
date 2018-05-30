@@ -3,7 +3,7 @@
 import React from "react";
 import isEqual from "lodash.isequal";
 import cloneDeep from "clone-deep";
-import type { ExtSettings } from "../common/options";
+import type { ExtSettings, GitHubApiTokenDetail } from "../common/options";
 import { OptionKeys } from "../common/options";
 import { Button, FormControl, FormGroup, FormLabel, Grid, Snackbar, Switch, TextField } from "@material-ui/core/es/index";
 import ColorPicker from "./ColorPicker";
@@ -98,6 +98,15 @@ class OptionsPage extends React.Component<Props> {
 		);
 	};
 
+	onApiTokenListChange = (values: Array<GitHubApiTokenDetail>) => {
+		this.setState({
+			extSettings: {
+				...this.state.extSettings,
+				[OptionKeys.api.tokens]: values,
+			},
+		});
+	};
+
 	render() {
 		const { extSettings } = this.state;
 
@@ -126,7 +135,7 @@ class OptionsPage extends React.Component<Props> {
 									<FormLabel component="legend">API Tokens</FormLabel>
 									<FormGroup>
 										<div style={ { marginLeft: "12px" } }>
-											<ApiTokenList/>
+											<ApiTokenList maxItems={ 2 } onChanged={ this.onApiTokenListChange } values={ this.state.extSettings[OptionKeys.api.tokens] }/>
 										</div>
 									</FormGroup>
 								</FormControl>
@@ -139,9 +148,9 @@ class OptionsPage extends React.Component<Props> {
 											<TextField
 												helperText="any valid CSS width value (e.g. 90%)"
 												id="common-page-width"
-												InputLabelProps={{
+												InputLabelProps={ {
 													shrink: true,
-												}}
+												} }
 												label="Page Width"
 												onChange={ this.getChangeHandler(OptionKeys.common.pageWidth) }
 												margin="normal"
@@ -170,9 +179,9 @@ class OptionsPage extends React.Component<Props> {
 												<TextField
 													helperText="any valid CSS width value (e.g. 400px)"
 													id="pr-files-tree-width"
-													InputLabelProps={{
+													InputLabelProps={ {
 														shrink: true,
-													}}
+													} }
 													label="File Tree Width"
 													onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.fileTreeWidth) }
 													margin="normal"

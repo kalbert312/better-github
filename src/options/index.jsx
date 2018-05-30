@@ -3,7 +3,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import type { ExtSettings } from "../common/options";
-import { defaultExtensionOptions } from "../common/options";
 import OptionsPage from "./options";
 
 type Props = {
@@ -44,13 +43,13 @@ const bootstrap = () => {
 		document.getElementById("root"),
 	);
 
-	chrome.storage.sync.get(defaultExtensionOptions, (settings) => {
-		if (chrome.runtime.lastError) {
-			throw new Error(chrome.runtime.lastError);
+	chrome.runtime.sendMessage({ type: "getSettings" }, (response) => {
+		if (!response || response.error) {
+			throw new Error(response ? response.error : "An unknown error has occurred.");
 		}
 
 		ReactDOM.render(
-			<App chrome={ chrome } extSettings={ settings }/>,
+			<App chrome={ chrome } extSettings={ response.settings }/>,
 			document.getElementById("root"),
 		);
 	});

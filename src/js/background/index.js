@@ -1,4 +1,4 @@
-import { defaultExtensionOptions } from "../../common/options";
+import { defaultExtensionOptions, normalizeGitHubApiTokenDetailValues, OptionKeys } from "../../common/options";
 
 let settings;
 const maxTries = 2;
@@ -7,6 +7,8 @@ const getExtSettingsFromStorage = () => {
 	console.debug("Better GitHub | Fetching extension settings...");
 	chrome.storage.sync.get(defaultExtensionOptions, (extSettings) => {
 		settings = extSettings;
+		settings[OptionKeys.api.tokens] = normalizeGitHubApiTokenDetailValues(settings[OptionKeys.api.tokens]);
+
 		console.debug("Better GitHub | Extension settings loaded.");
 	});
 };
