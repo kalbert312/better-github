@@ -43,6 +43,9 @@ class Tree extends React.Component<Props> {
 	onScroll() {
 		const { visibleElement } = this.state;
 		const { root, extSettings } = this.props;
+		if (!root) {
+			return;
+		}
 		const { diffElements = [] } = root;
 		const visibleDiffElements = diffElements.filter(isElementVisible);
 		if (!extSettings[OptionKeys.diff.filesChanged.singleFileDiffing] && extSettings[OptionKeys.diff.filesChanged.autoLoadLargeDiffs]) {
