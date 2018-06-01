@@ -180,7 +180,7 @@ class OptionsPage extends React.Component<Props> {
 								<Switch
 									color="primary"
 									checked={ extSettings[OptionKeys.diff.filesChanged.collapseInnerDirectories] }
-									id="pr-files-auto-load-large-diff"
+									id="pr-files-collapse-inner-directories"
 									onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.collapseInnerDirectories, "switch") }
 								/>
 							</Grid>
