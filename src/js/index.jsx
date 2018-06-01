@@ -32,6 +32,11 @@ const onPjaxContainerMutated = (settings: ExtSettings) => {
 };
 
 const injectStyles = (extSettings: ExtSettings) => {
+	if (!document.head) {
+		setTimeout(() => injectStyles(settings), 50);
+		return;
+	}
+
 	let cssToInject = {};
 
 	if (extSettings[OptionKeys.common.pageWidth]) {
@@ -140,41 +145,42 @@ const maybeRenderToBottomLink = (extSettings: ExtSettings) => {
 	render(<span id="better-github-to-bottom" className="btn-link" onClick={ onClick }>Jump to Bottom</span>, targetEl);
 };
 
-const init = () => {
-	let containers = Array.prototype.slice.call(document.body.querySelectorAll(".container"));
-	if (containers && containers.length) {
-		containers.forEach((c) => c.style.visibility = "hidden");
-	}
-
-	require("./style.css");
-
+const settingsPromise = new Promise((resolve, reject) => {
 	chrome.runtime.sendMessage({ type: "getSettings" }, (response) => {
 		let error;
 		if (!response || response.error) {
 			error = `Better GitHub | ${response ? response.error : "An unknown error has occurred."}`;
 		}
 		settings = response ? response.settings : null;
-		if (!error) {
-			injectStyles(settings);
-		}
-		setTimeout(() => {
-			if (containers && containers.length) {
-				containers.forEach((c) => c.style.visibility = "");
-			}
-		}, 50);
+
 		if (error) {
-			console.error(error);
-			return;
+			reject(error);
+		} else {
+			resolve(settings);
 		}
-
-		if (settings[OptionKeys.diff.filesChanged.singleFileDiffing]) {
-			window.addEventListener("popstate", (e) => {
-				switchDiffPanelToHash(settings);
-			});
-		}
-
-		onPjaxContainerMutated(settings);
 	});
+});
+
+settingsPromise.then((settings) => {
+	injectStyles(settings);
+});
+
+const init = () => {
+	require("./style.css");
+
+	settingsPromise
+		.then((settings) => {
+			if (settings[OptionKeys.diff.filesChanged.singleFileDiffing]) {
+				window.addEventListener("popstate", (e) => {
+					switchDiffPanelToHash(settings);
+				});
+			}
+
+			onPjaxContainerMutated(settings);
+		})
+		.catch((error) => {
+			console.error(error);
+		});
 };
 
 window.addEventListener("DOMContentLoaded", (e) => {
