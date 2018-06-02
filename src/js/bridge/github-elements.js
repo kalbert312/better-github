@@ -101,12 +101,26 @@ export type FileNode = {
 	fileStatus?: FileStatus,
 };
 
+
 type FileData = {
 	path: string,
 	parts: Array<String>,
 	name: string,
 	fileStatus: FileStatus,
 	hasComments: ?boolean,
+};
+
+const collapseInnerDirectories = (node, parent) => {
+    if (node.list) {
+        if (node.list.length === 1 && parent && node.list[0].type !== "file") {
+            node.list[0].nodeLabel = `${node.nodeLabel}/${node.list[0].nodeLabel}`;
+            const idx = parent.list.indexOf(node);
+            parent.list[idx] = node.list[0];
+            collapseInnerDirectories(parent.list[idx], parent);
+        } else {
+            node.list.forEach(childNode => collapseInnerDirectories(childNode, node));
+        }
+    }
 };
 
 export const createFileTree = (extSettings: ExtSettings, apiResponseData: ApiResponseData) => {
@@ -191,6 +205,10 @@ export const createFileTree = (extSettings: ExtSettings, apiResponseData: ApiRes
 			nodeCursor = node;
 		});
 	});
+
+	if (extSettings[OptionKeys.diff.filesChanged.collapseInnerDirectories]) {
+		collapseInnerDirectories(rootNode, null);
+	}
 
 	return {
 		tree: rootNode,

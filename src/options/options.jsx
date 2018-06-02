@@ -210,15 +210,24 @@ class OptionsPage extends React.Component<Props> {
 												</Grid>
 											</div>
 											}
-											<Grid container={ true } justify="space-between" alignItems="center">
+											<Grid container={ true } justify="space-between" alignItems="center" style={ { marginBottom: "30px" } }>
 												<label htmlFor="pr-files-auto-load-large-diff">Auto Load Large Diffs</label>
 												<Switch
 													color="primary"
 													checked={ extSettings[OptionKeys.diff.filesChanged.autoLoadLargeDiffs] }
 													id="pr-files-auto-load-large-diff"
 													onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.autoLoadLargeDiffs, "switch") }
-												/>
-											</Grid>
+                                                />
+							                </Grid>
+                                            <Grid container={ true } justify="space-between" alignItems="center">
+                                                <label htmlFor="pr-files-collapse-inner-directories">Collapse inner directories in file tree when possible</label>
+                                                <Switch
+                                                    color="primary"
+                                                    checked={ extSettings[OptionKeys.diff.filesChanged.collapseInnerDirectories] }
+                                                    id="pr-files-collapse-inner-directories"
+                                                    onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.collapseInnerDirectories, "switch") }
+                                                />
+                                            </Grid>
 										</div>
 									</FormGroup>
 								</FormControl>
