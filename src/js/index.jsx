@@ -1,12 +1,18 @@
 // @flow
 
-import { observe } from "./bridge/observation";
+import {observe} from "./bridge/observation";
 import React from "react";
-import { render } from "react-dom";
+import {render} from "react-dom";
 import Tree from "./components/fileTree/tree";
-import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, FileStatuses, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from "./bridge/github-elements";
-import type { ExtSettings } from "../common/options";
-import { getApiTokenForHost, OptionKeys } from "../common/options";
+import {
+    createFileTree,
+    createOrGetPRFilesChangedTreeContainerEl,
+    FileStatuses,
+    getPartialDiscussionHeaderEl,
+    switchDiffPanelToHash
+} from "./bridge/github-elements";
+import type {ExtSettings} from "../common/options";
+import {getApiTokenForHost, OptionKeys} from "../common/options";
 
 const { document } = window;
 

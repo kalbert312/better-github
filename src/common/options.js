@@ -38,7 +38,7 @@ export const getApiTokenForHost = (host: string, extSettings: ExtSettings): ?str
 
 export const OptionKeys = {
 	api: {
-		tokens: "K",
+        tokens: "L",
 	},
 	common: {
 		pageWidth: "A",

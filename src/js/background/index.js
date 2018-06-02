@@ -1,4 +1,4 @@
-import { defaultExtensionOptions, normalizeGitHubApiTokenDetailValues, OptionKeys } from "../../common/options";
+import {defaultExtensionOptions, normalizeGitHubApiTokenDetailValues, OptionKeys} from "../../common/options";
 import "./hot-reload";
 
 let settings;

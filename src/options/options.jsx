@@ -3,9 +3,9 @@
 import React from "react";
 import isEqual from "lodash.isequal";
 import cloneDeep from "clone-deep";
-import type { ExtSettings, GitHubApiTokenDetail } from "../common/options";
-import { OptionKeys } from "../common/options";
-import { Button, FormControl, FormGroup, FormLabel, Grid, Snackbar, Switch, TextField } from "@material-ui/core/es/index";
+import type {ExtSettings, GitHubApiTokenDetail} from "../common/options";
+import {OptionKeys} from "../common/options";
+import {Button, FormControl, FormGroup, FormLabel, Grid, Snackbar, Switch, TextField} from "@material-ui/core/es/index";
 import ColorPicker from "./ColorPicker";
 import ApiTokenList from "./ApiTokenList";
 
@@ -210,7 +210,7 @@ class OptionsPage extends React.Component<Props> {
 												</Grid>
 											</div>
 											}
-											<Grid container={ true } justify="space-between" alignItems="center" style={ { marginBottom: "30px" } }>
+                                            <Grid container={true} justify="space-between" alignItems="center">
 												<label htmlFor="pr-files-auto-load-large-diff">Auto Load Large Diffs</label>
 												<Switch
 													color="primary"

@@ -1,8 +1,8 @@
 // @flow
 
-import type { ExtSettings } from "../../common/options";
-import { OptionKeys } from "../../common/options";
-import type { ApiResponseData } from "../index";
+import type {ExtSettings} from "../../common/options";
+import {OptionKeys} from "../../common/options";
+import type {ApiResponseData} from "../index";
 
 export const createOrGetPRFilesChangedTreeContainerEl = (): ?HTMLElement => {
 	const injectionElement = document.querySelector(".pr-toolbar");
