@@ -3,9 +3,9 @@
 import React from "react";
 import isEqual from "lodash.isequal";
 import cloneDeep from "clone-deep";
-import type {ExtSettings, GitHubApiTokenDetail} from "../common/options";
-import {OptionKeys} from "../common/options";
-import {Button, FormControl, FormGroup, FormLabel, Grid, Snackbar, Switch, TextField} from "@material-ui/core/es/index";
+import type { ExtSettings , GitHubApiTokenDetail} from "../common/options";
+import { OptionKeys } from "../common/options";
+import { Button, FormControl, FormGroup, FormLabel, Grid, Snackbar, Switch, TextField } from "@material-ui/core/es/index";
 import ColorPicker from "./ColorPicker";
 import ApiTokenList from "./ApiTokenList";
 
@@ -187,6 +187,15 @@ class OptionsPage extends React.Component<Props> {
 													margin="normal"
 													value={ extSettings[OptionKeys.diff.filesChanged.fileTreeWidth] }
 												/>
+                                                <Grid container={ true } justify="space-between" alignItems="center">
+                                                    <label htmlFor="pr-files-collapse-inner-directories">Collapse inner directories in file tree when possible</label>
+                                                    <Switch
+                                                        color="primary"
+                                                        checked={ extSettings[OptionKeys.diff.filesChanged.collapseInnerDirectories] }
+                                                        id="pr-files-collapse-inner-directories"
+                                                        onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.collapseInnerDirectories, "switch") }
+                                                    />
+                                                </Grid>
 												<Grid container={ true } justify="space-between" alignItems="center">
 													<label htmlFor="pr-files-single-diff">Single File Diffing (Experimental)</label>
 													<Switch
@@ -219,15 +228,6 @@ class OptionsPage extends React.Component<Props> {
 													onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.autoLoadLargeDiffs, "switch") }
                                                 />
 							                </Grid>
-                                            <Grid container={ true } justify="space-between" alignItems="center">
-                                                <label htmlFor="pr-files-collapse-inner-directories">Collapse inner directories in file tree when possible</label>
-                                                <Switch
-                                                    color="primary"
-                                                    checked={ extSettings[OptionKeys.diff.filesChanged.collapseInnerDirectories] }
-                                                    id="pr-files-collapse-inner-directories"
-                                                    onChange={ this.getChangeHandler(OptionKeys.diff.filesChanged.collapseInnerDirectories, "switch") }
-                                                />
-                                            </Grid>
 										</div>
 									</FormGroup>
 								</FormControl>
