@@ -1,12 +1,18 @@
 // @flow
 
-import { observe } from "./bridge/observation";
+import {observe} from "./bridge/observation";
 import React from "react";
-import { render } from "react-dom";
+import {render} from "react-dom";
 import Tree from "./components/fileTree/tree";
-import { createFileTree, createOrGetPRFilesChangedTreeContainerEl, FileStatuses, getPartialDiscussionHeaderEl, switchDiffPanelToHash } from "./bridge/github-elements";
-import type { ExtSettings } from "../common/options";
-import { OptionKeys } from "../common/options";
+import {
+    createFileTree,
+    createOrGetPRFilesChangedTreeContainerEl,
+    FileStatuses,
+    getPartialDiscussionHeaderEl,
+    switchDiffPanelToHash
+} from "./bridge/github-elements";
+import type {ExtSettings} from "../common/options";
+import {OptionKeys} from "../common/options";
 
 const { document } = window;
 
@@ -32,11 +38,6 @@ const onPjaxContainerMutated = (settings: ExtSettings) => {
 };
 
 const injectStyles = (extSettings: ExtSettings) => {
-	if (!document.head) {
-		setTimeout(() => injectStyles(settings), 50);
-		return;
-	}
-
 	let cssToInject = {};
 
 	if (extSettings[OptionKeys.common.pageWidth]) {
@@ -161,15 +162,13 @@ const settingsPromise = new Promise((resolve, reject) => {
 	});
 });
 
-settingsPromise.then((settings) => {
-	injectStyles(settings);
-});
-
 const init = () => {
 	require("./style.css");
 
 	settingsPromise
 		.then((settings) => {
+            injectStyles(settings);
+
 			if (settings[OptionKeys.diff.filesChanged.singleFileDiffing]) {
 				window.addEventListener("popstate", (e) => {
 					switchDiffPanelToHash(settings);
