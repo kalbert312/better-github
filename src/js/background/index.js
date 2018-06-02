@@ -1,4 +1,5 @@
 import { defaultExtensionOptions } from "../../common/options";
+import "./hot-reload";
 
 let settings;
 const maxTries = 2;
